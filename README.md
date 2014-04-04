@@ -10,7 +10,7 @@ This application uses the open-source development framework [CakePHP](http://cak
 The application makes heavy use of the following PHP libraries:
 
 - [PHPePub](https://github.com/Grandt/PHPePub), packaged as a Cake plugin called [CakeEPUB](https://github.com/DigitalPublishingToolkit/epubster/tree/master/Plugin/CakeEPUB)
-- [Markdown CakePHP](https://github.com/maurymmarques/markdown-cakephp), modified to use endnotes
+- [Markdown CakePHP](https://github.com/maurymmarques/markdown-cakephp), modified to parse endnotes
 
 On the client-side:
 
