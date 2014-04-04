@@ -14,5 +14,6 @@ app/webroot/index.php
 .Trashes
 ehthumbs.db
 Thumbs.db
+config.codekit
 .htaccess
 bootstrap.php
