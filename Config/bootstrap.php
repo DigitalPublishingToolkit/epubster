@@ -115,7 +115,7 @@ CakePlugin::load(array(
 ));
 
 define('EPUB_STYLES', WWW_ROOT.'/files/styles/');
-define('SITE_URL', sprintf('http://%s/~mensch/epubster/', $_SERVER['SERVER_NAME']));
+define('SITE_URL', sprintf('http://%s/epubster/', $_SERVER['SERVER_NAME']));
 define('UPLOAD_PATH', WWW_ROOT.'/files/uploads/');
 define('BASE_UPLOAD_PATH', '/files/uploads/');
 define('IMAGE_THUMB_WIDTH', 185);
