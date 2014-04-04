@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Basic ePubJS Example</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="epub-js.css">
+          
+  <script src="../jquery.min.js"></script>
+  <script src="zip.min.js"></script>
+  <script src="epub.min.js"></script>
+  <script src="../bootstrap/js/bootstrap.min.js"></script>
+  
+  <script>
+    EPUBJS.filePath = "libs/";
+    EPUBJS.cssPath = "css/";
+
+    "use strict";
+    if (parent.epub) {
+      var Book = ePub(parent.epub);              
+
+      Book.getMetadata().then(function(meta){
+        document.title = meta.bookTitle+" – "+meta.creator;      
+      });
+      
+      Book.getToc().then(function(toc) {
+        var count = 0;
+        toc.forEach(function(chapter) {
+
+
+          if (count === 0) {
+            var entry = '<li><a href="'+chapter.href+'">'+chapter.label+'</a></li><li class="divider"></li>';
+          } else {
+            var entry = '<li><a href="'+chapter.href+'">'+chapter.label+'</a></li>';            
+          }
+          
+          $('#toc-list ul.dropdown-menu').append(entry);
+          count++;
+        });
+      });
+    }
+    
+    $(document).ready(function() {
+      $('#epub-js-navigation .nav li a').tooltip();
+      
+      $('#previous-page-btn, #next-page-btn').on('click', function(event) {
+        if ($(this).attr('id') === 'previous-page-btn') {
+          Book.prevPage();
+        }
+        if ($(this).attr('id') === 'next-page-btn') {
+          Book.nextPage();
+        }
+        event.preventDefault();
+      });
+
+      $('#toggle-columns').on('click', function(event) {
+        if ($('#reader iframe').hasClass('single')) {
+          $('#reader iframe').css('width','100%');
+        } else {
+          $('#reader iframe').css('width','80%');
+        }
+        $('#reader iframe').toggleClass('single');
+        event.preventDefault();
+      });
+
+      $(document).on('click', '#toc-list ul.dropdown-menu li a', function(event) {
+        var href = $(this).attr('href');
+/*
+        $('#toc-list ul.dropdown-menu li').removeClass('active');
+        $(this).parent().addClass('active');
+*/
+        Book.goto(href);
+        event.preventDefault();
+      });
+    });
+  </script>
+</head>
+  <body>
+    <nav id="epub-js-navigation" class="navbar navbar-inverse" role="navigation">
+     <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#epub-js-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="epub-js-navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a accesskey="p" data-toggle="tooltip" data-placement="bottom" data-original-title="Previous page" href="#" id="previous-page-btn" role="button"><span class="fa fa-arrow-left"></span></a></li>
+          <li><a accesskey="n" data-toggle="tooltip" data-placement="bottom" data-original-title="Next page" href="#" id="next-page-btn" role="button"><span class="fa fa-arrow-right"></span></a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li id="toc-list" class="dropdown">
+          <li><a accesskey="c" data-toggle="tooltip" data-placement="bottom" data-original-title="Toggle columns" href="#" id="toggle-columns" role="button"><span class="fa fa-columns"></span></a></li>
+          </li>
+          <li id="toc-list" class="dropdown">
+            <a accesskey="t" href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-list"></span> <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="reader-container">
+      <div id="reader">
+      </div>
+    </div>
+    <script>            
+      Book.renderTo("reader");
+    </script>
+  </body>
+</html>

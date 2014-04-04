@@ -1,0 +1,447 @@
+@import url('../fonts/Droid-Sans/stylesheet.css');
+@import url('../fonts/Droid-Sans-Mono/stylesheet.css');
+
+@grey : #cccbcb;
+@lightgrey : #f0eeee;
+@darkgrey : #797979;
+@red : #f16128;
+
+.clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+    // Fixes Opera/contenteditable bug:
+    // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+    line-height: 0;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+body {
+  font-family: "Droid Sans";
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Droid Sans";  
+}
+
+em {
+  font-style: italic;
+}
+
+code {
+  font-family: "Droid Sans Mono";
+}
+
+input, textarea {
+  font-family: "Droid Sans";  
+}
+
+#header {
+  margin-top: 20px;
+}
+
+#main {
+  .actions {
+    .nav-list {
+      li {
+        &.divider {
+          border-top: 1px solid #ddd;
+        }
+      
+        i {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+  
+  .page-title {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 20px;
+    font-size: 21px;
+    line-height: inherit;
+    color: #333;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  #epub-container {
+    min-height: 100px;
+  }
+  
+  iframe#page-epub {
+    border: 0;
+    width: 100%;
+    min-height: 800px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .markItUp {
+    width: auto;
+    
+    .markItUpContainer {
+      position: relative;
+    }
+    
+    .markItUpPreviewFrame {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      height: 640px;
+/*
+      position: absolute;
+      bottom: -5px;
+*/
+    }
+    
+    .markItUpHeader {
+      .clearfix;
+      border: 1px solid #ccc;
+      padding: 5px 0;
+      background: @lightgrey;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      
+      ul {
+        margin: 0 5px;
+        
+        li {
+          margin-right: 5px;
+          
+          &.markItUpSeparator {
+            visibility: hidden;
+            width: 15px;
+          }
+          
+          a {
+            background-position: center;
+            background-color: #fff;
+            width: 25px;
+            height: 25px;
+            border: 1px solid @grey;
+            border-radius: 4px;
+          }        
+        }        
+      }
+    }
+    
+    textarea {
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+      border-top: 0px;
+    }
+  }
+  
+  .markdown-editor {
+    font-family: "Droid Sans Mono";
+    width: 100%;
+    height: 600px;
+  }
+  
+  #rich-text-preprocessor {
+    width: 100%;
+    min-height: 150px;
+    max-height: 300px;
+    overflow: auto;
+  }
+  
+  #rich-text-processed {
+    display: none;
+  }
+  
+  .table {
+    tbody tr td {
+      vertical-align: top;
+    }
+    
+    tbody tr th {
+      white-space: nowrap;
+      .asc .caret {
+        border-bottom: 4px solid #000; 
+        border-top: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+      }
+    }
+    
+    tbody tr td.title {
+      width: 30%;
+    }
+
+    tbody tr td.description {
+      font-size: 12px;
+    }
+    
+    .actions {
+      min-width: 210px;  
+    }
+  }
+  
+  .tab-content {
+    padding-top: 20px;
+    position: relative;
+
+    .tab-settings {
+      color: #555;
+      top: 0;
+      right: 0;
+      position: absolute;
+      text-decoration: none;
+    }
+  }
+  
+  .nav-tabs {
+    li.alert {
+      padding: 10px 15px;
+    }
+  }
+
+  .modal {
+    .modal-body {
+      .btn-group {
+        margin-bottom: 25px;
+      }
+      
+      ul {
+        list-style-type: none;
+        margin: 25px 0;
+        padding: 0;
+        
+        li {
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+  
+  #section-tabs {
+    font-size: 12px;
+    
+    li a {
+      padding: 8px 10px;
+    }
+  }
+  
+  #cover-image {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    
+    #cover-image-upload, #cover-image-current {
+      border: 1px solid @grey;
+      border-radius: 4px;
+      width: 140px;
+      height: 195px;
+      display: block;
+    }
+    
+    #cover-image-current {
+      background-size: cover;
+    }
+    
+    #cover-image-upload {
+      background: @lightgrey;
+      text-decoration: none;
+      color: @darkgrey;
+      text-align: center;
+      line-height: 195px;
+      font-size: 30px;
+      
+      &:hover, &:active {
+        background: #e9e8e8;
+      }
+    }
+  }
+  
+  ul#section-sorting {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 20px;
+    
+    li {
+      .clearfix;
+      list-style-type: none;  
+      border: 1px solid @grey;
+      border-top: 0;
+      background: #fff;
+      min-height: 32px;
+      cursor: move;
+      
+      &:first-child {
+        border-top: 1px solid @grey;        
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+      
+      &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      
+      &.ui-sortable-helper {
+        border-radius: 0;
+      }
+      
+      .section-prefix {
+        display: block;
+        float: left;
+        background: @lightgrey;
+        border-right: 1px solid @grey;
+        width: 32px;
+        height: 32px;
+        color: @darkgrey;
+        text-align: center;
+        line-height: 32px;
+      }
+      
+      .section-label, .section-delete {
+        padding: 5px;
+        display: inline-block;
+      }
+      
+      .section-label {
+        padding-left: 10px;
+      }
+      
+      .section-delete {
+        float: right;
+        padding-right: 10px;
+        text-decoration: none;
+        border-left: 1px solid @grey;
+        height: 32px;
+        
+        .fa {
+          color: @red;
+        }
+      }
+    }
+    
+    .ui-state-highlight {
+      background: @lightgrey;
+    }
+  }
+  
+  #file-library {
+    display: none;
+    width: 100%;
+    min-height: 200px;
+    position: relative;
+        
+    .thumbnail-container {
+      margin-bottom: 25px;
+    }
+    
+    .spinner {
+      width: 1px !important;
+      height: 1px !important;
+      margin-top: -6px;
+      top: 50%;
+      margin-left: -6px;
+      left: 50%;
+      position: absolute !important;
+    }
+    
+    a.thumbnail {
+      position: relative;
+      text-decoration: none;
+
+      i.selected-file, i.delete-file {
+        position: absolute;
+      }
+
+      i.selected-file {
+        left: 5px;
+        display: none;
+      }
+      
+      i.delete-file {
+        right: 5px;
+      }
+      
+      &.selected {
+        border-color: #428bca;
+        
+        i.fa-check-circle {
+          display: block;
+        }        
+      }
+    }
+  }
+
+  #file-uploader {
+    li.file {
+      .clearfix;
+      padding-right: 30px;
+      position: relative;
+      
+      span.file-name {
+        display: inline-block;
+        width: 48%;
+        float: left;
+      }
+      
+      span.remove-file, span.file-success {
+        position: absolute;
+        right: 5px;
+        margin-top: -10px;
+        top: 50%;
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
+        display: block;
+        text-align: center;
+        opacity: 0.5;
+        
+        &:hover, &:active {
+          opacity: 1;
+        }
+      }
+
+      span.file-success {
+        opacity: 1;
+        cursor: default;
+      }      
+
+      span.progress-container {
+        float: right;
+        width: 50%;
+        padding-top: 7px;
+        
+        span.progress {
+          height: 5px;
+          margin-bottom: 0px;
+          display: block;
+          
+          span {
+            display: block;
+          }
+        }        
+      }      
+    }
+  }
+  
+  .preview-area {
+    blockquote small {
+      display: inline;
+      
+      &::before {
+        content: '';
+      }
+    }
+  }
+}
+
+#footer {
+  font-family: "Droid Sans Mono";
+  font-size: 10px;
+  padding: 10px 0;
+  text-align: right;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+}

@@ -1,0 +1,388 @@
+@import url('../fonts/Droid-Sans/stylesheet.css');
+@import url('../fonts/Droid-Sans-Mono/stylesheet.css');
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+body {
+  font-family: "Droid Sans";
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Droid Sans";
+}
+em {
+  font-style: italic;
+}
+code {
+  font-family: "Droid Sans Mono";
+}
+input,
+textarea {
+  font-family: "Droid Sans";
+}
+#header {
+  margin-top: 20px;
+}
+#main .actions .nav-list li.divider {
+  border-top: 1px solid #ddd;
+}
+#main .actions .nav-list li i {
+  margin-right: 5px;
+}
+#main .page-title {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 20px;
+  font-size: 21px;
+  line-height: inherit;
+  color: #333;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+#main #epub-container {
+  min-height: 100px;
+}
+#main iframe#page-epub {
+  border: 0;
+  width: 100%;
+  min-height: 800px;
+  border-bottom: 1px solid #e5e5e5;
+}
+#main .markItUp {
+  width: auto;
+}
+#main .markItUp .markItUpContainer {
+  position: relative;
+}
+#main .markItUp .markItUpPreviewFrame {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 640px;
+  /*
+      position: absolute;
+      bottom: -5px;
+*/
+}
+#main .markItUp .markItUpHeader {
+  *zoom: 1;
+  border: 1px solid #ccc;
+  padding: 5px 0;
+  background: #f0eeee;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+#main .markItUp .markItUpHeader:before,
+#main .markItUp .markItUpHeader:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+#main .markItUp .markItUpHeader:after {
+  clear: both;
+}
+#main .markItUp .markItUpHeader ul {
+  margin: 0 5px;
+}
+#main .markItUp .markItUpHeader ul li {
+  margin-right: 5px;
+}
+#main .markItUp .markItUpHeader ul li.markItUpSeparator {
+  visibility: hidden;
+  width: 15px;
+}
+#main .markItUp .markItUpHeader ul li a {
+  background-position: center;
+  background-color: #fff;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #cccbcb;
+  border-radius: 4px;
+}
+#main .markItUp textarea {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-top: 0px;
+}
+#main .markdown-editor {
+  font-family: "Droid Sans Mono";
+  width: 100%;
+  height: 600px;
+}
+#main #rich-text-preprocessor {
+  width: 100%;
+  min-height: 150px;
+  max-height: 300px;
+  overflow: auto;
+}
+#main #rich-text-processed {
+  display: none;
+}
+#main .table tbody tr td {
+  vertical-align: top;
+}
+#main .table tbody tr th {
+  white-space: nowrap;
+}
+#main .table tbody tr th .asc .caret {
+  border-bottom: 4px solid #000;
+  border-top: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+#main .table tbody tr td.title {
+  width: 30%;
+}
+#main .table tbody tr td.description {
+  font-size: 12px;
+}
+#main .table .actions {
+  min-width: 210px;
+}
+#main .tab-content {
+  padding-top: 20px;
+  position: relative;
+}
+#main .tab-content .tab-settings {
+  color: #555;
+  top: 0;
+  right: 0;
+  position: absolute;
+  text-decoration: none;
+}
+#main .nav-tabs li.alert {
+  padding: 10px 15px;
+}
+#main .modal .modal-body .btn-group {
+  margin-bottom: 25px;
+}
+#main .modal .modal-body ul {
+  list-style-type: none;
+  margin: 25px 0;
+  padding: 0;
+}
+#main .modal .modal-body ul li {
+  margin-bottom: 10px;
+}
+#main #section-tabs {
+  font-size: 12px;
+}
+#main #section-tabs li a {
+  padding: 8px 10px;
+}
+#main #cover-image {
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+#main #cover-image #cover-image-upload,
+#main #cover-image #cover-image-current {
+  border: 1px solid #cccbcb;
+  border-radius: 4px;
+  width: 140px;
+  height: 195px;
+  display: block;
+}
+#main #cover-image #cover-image-current {
+  background-size: cover;
+}
+#main #cover-image #cover-image-upload {
+  background: #f0eeee;
+  text-decoration: none;
+  color: #797979;
+  text-align: center;
+  line-height: 195px;
+  font-size: 30px;
+}
+#main #cover-image #cover-image-upload:hover,
+#main #cover-image #cover-image-upload:active {
+  background: #e9e8e8;
+}
+#main ul#section-sorting {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 20px;
+}
+#main ul#section-sorting li {
+  *zoom: 1;
+  list-style-type: none;
+  border: 1px solid #cccbcb;
+  border-top: 0;
+  background: #fff;
+  min-height: 32px;
+  cursor: move;
+}
+#main ul#section-sorting li:before,
+#main ul#section-sorting li:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+#main ul#section-sorting li:after {
+  clear: both;
+}
+#main ul#section-sorting li:first-child {
+  border-top: 1px solid #cccbcb;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+#main ul#section-sorting li:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+#main ul#section-sorting li.ui-sortable-helper {
+  border-radius: 0;
+}
+#main ul#section-sorting li .section-prefix {
+  display: block;
+  float: left;
+  background: #f0eeee;
+  border-right: 1px solid #cccbcb;
+  width: 32px;
+  height: 32px;
+  color: #797979;
+  text-align: center;
+  line-height: 32px;
+}
+#main ul#section-sorting li .section-label,
+#main ul#section-sorting li .section-delete {
+  padding: 5px;
+  display: inline-block;
+}
+#main ul#section-sorting li .section-label {
+  padding-left: 10px;
+}
+#main ul#section-sorting li .section-delete {
+  float: right;
+  padding-right: 10px;
+  text-decoration: none;
+  border-left: 1px solid #cccbcb;
+  height: 32px;
+}
+#main ul#section-sorting li .section-delete .fa {
+  color: #f16128;
+}
+#main ul#section-sorting .ui-state-highlight {
+  background: #f0eeee;
+}
+#main #file-library {
+  display: none;
+  width: 100%;
+  min-height: 200px;
+  position: relative;
+}
+#main #file-library .thumbnail-container {
+  margin-bottom: 25px;
+}
+#main #file-library .spinner {
+  width: 1px !important;
+  height: 1px !important;
+  margin-top: -6px;
+  top: 50%;
+  margin-left: -6px;
+  left: 50%;
+  position: absolute !important;
+}
+#main #file-library a.thumbnail {
+  position: relative;
+  text-decoration: none;
+}
+#main #file-library a.thumbnail i.selected-file,
+#main #file-library a.thumbnail i.delete-file {
+  position: absolute;
+}
+#main #file-library a.thumbnail i.selected-file {
+  left: 5px;
+  display: none;
+}
+#main #file-library a.thumbnail i.delete-file {
+  right: 5px;
+}
+#main #file-library a.thumbnail.selected {
+  border-color: #428bca;
+}
+#main #file-library a.thumbnail.selected i.fa-check-circle {
+  display: block;
+}
+#main #file-uploader li.file {
+  *zoom: 1;
+  padding-right: 30px;
+  position: relative;
+}
+#main #file-uploader li.file:before,
+#main #file-uploader li.file:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+#main #file-uploader li.file:after {
+  clear: both;
+}
+#main #file-uploader li.file span.file-name {
+  display: inline-block;
+  width: 48%;
+  float: left;
+}
+#main #file-uploader li.file span.remove-file,
+#main #file-uploader li.file span.file-success {
+  position: absolute;
+  right: 5px;
+  margin-top: -10px;
+  top: 50%;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: block;
+  text-align: center;
+  opacity: 0.5;
+}
+#main #file-uploader li.file span.remove-file:hover,
+#main #file-uploader li.file span.file-success:hover,
+#main #file-uploader li.file span.remove-file:active,
+#main #file-uploader li.file span.file-success:active {
+  opacity: 1;
+}
+#main #file-uploader li.file span.file-success {
+  opacity: 1;
+  cursor: default;
+}
+#main #file-uploader li.file span.progress-container {
+  float: right;
+  width: 50%;
+  padding-top: 7px;
+}
+#main #file-uploader li.file span.progress-container span.progress {
+  height: 5px;
+  margin-bottom: 0px;
+  display: block;
+}
+#main #file-uploader li.file span.progress-container span.progress span {
+  display: block;
+}
+#main .preview-area blockquote small {
+  display: inline;
+}
+#main .preview-area blockquote small::before {
+  content: '';
+}
+#footer {
+  font-family: "Droid Sans Mono";
+  font-size: 10px;
+  padding: 10px 0;
+  text-align: right;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+}
