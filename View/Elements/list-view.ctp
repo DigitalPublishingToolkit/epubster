@@ -1,24 +1,3 @@
- <div id="content" class="row">
-  
-  <?php echo $this->element('actions'); ?>
-  
-  <div class="editions index col-md-9">
-  
-    <?php echo $this->Form->create('Edition'); ?>
-  	<fieldset>
-  		<legend><?php echo __('Editions'); ?></legend>
-  		<div class="input-group">
-    		<?php
-          echo $this->Form->input('search', array('div' => false, 'label' => false, 'class' => 'form-control', 'placeholder' => __('Search editions...')));
-    		?>
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>
-        </span>
-  		</div>
-  	</fieldset>
-  	<?php echo $this->Form->end(); ?>
-		<br />
-    <?php if (!empty($editions)) : ?>
   	<table class="table" cellpadding="0" cellspacing="0">
   	<tr>
   			<?php $caret = '<span class="caret"></span>'; ?>
@@ -44,8 +23,3 @@
   	</table>
 
   	<?php //echo $this->element('pagination'); ?>
-    <?php else : ?>
-      <p class="alert alert-info"><?php echo __('No editions found.'); ?></p>
-    <?php endif; ?>
-  </div>
-</div>

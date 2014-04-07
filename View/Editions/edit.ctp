@@ -15,18 +15,41 @@
       <li><a href="#tab-content"><span class="fa fa-file-text-o"></span> <?php echo __('Content'); ?></a></li>
       <li><a href="#tab-design"><span class="fa fa-picture-o"></span> <?php echo __('Design'); ?></a></li>
     </ul>
-
+    	
     <div class="tab-content">
       <div class="tab-pane active" id="tab-about">
+
+        <p class="explanation"><?php echo __('Please fill in the required metadata below, this data is used by e-readers to build a collection of EPUBs.'); ?></p>
+      
         <?php
-      		echo $this->Form->input('name', array('div' => array('class' => 'form-group'), 'class' => 'form-control'));
-      		echo $this->Form->input('description', array('div' => array('class' => 'form-group'), 'class' => 'form-control'));
-      		echo $this->Form->input('author', array('div' => array('class' => 'form-group'), 'class' => 'form-control'));
-      		echo $this->Form->input('publisher', array('div' => array('class' => 'form-group'), 'class' => 'form-control'));
-      		echo $this->Form->input('publisher_website', array('div' => array('class' => 'form-group'), 'class' => 'form-control'));
+      		echo $this->Form->input('name', array('div' => array('class' => 'form-group'), 'label' => __('Title of the publication'), 'class' => 'form-control'));
+      		echo $this->Form->input('description', array('div' => array('class' => 'form-group'), 'label' => __('Description'), 'class' => 'form-control'));
         ?>
+        
+        <div class="row">
+        <?php
+      		echo $this->Form->input('author', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Author(s)'), 'class' => 'form-control'));
+      		echo $this->Form->input('website', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Website'), 'class' => 'form-control'));
+        ?>
+        </div>
+        
+        <div class="row">
+        <?php
+      		echo $this->Form->input('publisher', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Publisher'), 'class' => 'form-control'));
+      		echo $this->Form->input('publisher_website', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Publisher website'), 'class' => 'form-control'));
+        ?>
+        </div>
+        
+        <div class="row">
+          <?php 
+        		echo $this->Form->input('identifier', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Identifier (ISBN)'), 'class' => 'form-control'));       
+          ?>
+        </div>
+        
       </div>
       <div class="tab-pane" id="tab-sections">
+        <p class="explanation"><?php echo __('Changing the order of the sections will allow you to manipulate the internal structure of the edition and its table of contents.'); ?></p>
+      
         <p><strong><?php echo __('Change the order of the sections'); ?></strong></p>
         <?php if (!empty($chapters)) : ?>
         <ul id="section-sorting">
@@ -45,7 +68,7 @@
         <?php endif; ?>         
       </div>
       <div class="tab-pane" id="tab-content">
-        
+        <p class="explanation"><?php echo __('Create sections below using <a href="https://daringfireball.net/projects/markdown/">Markdown</a> or just plain text. Images may also be included here using the upload function and relevant Markdown syntax for including media.'); ?></p>
         <?php
         	echo $this->Form->input('chapters', array('div' => array('class' => 'form-group'), 'label' => __('Select a section'), 'class' => 'form-control', 'options' => $chapters));
         ?>
@@ -58,7 +81,7 @@
           <li<?php echo ($count === 0) ? ' class="active"': ''; ?>><a href="#section-<?php echo $anchor; ?>" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $section['title']; ?>"><?php echo $title; ?></a></li>
           <?php $count++; ?>
         <?php endforeach; ?>
-          <li><a id="add-new-section" href="<?php echo $this->Html->url(array('controller' => 'sections', 'action' => 'create_section', 'edition' => $id, 'count' => $count)); ?>"><strong><i class="fa fa-plus"></i></strong></a></li>
+          <li><a id="add-new-section" href="<?php echo $this->Html->url(array('controller' => 'sections', 'action' => 'create_section', 'edition' => $id, 'count' => $count)); ?>" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo __('Create new section'); ?>"><strong><i class="fa fa-plus"></i></strong></a></li>
       	</ul>
         
         <div class="tab-content">
@@ -72,6 +95,7 @@
       	</div>        
       </div>
       <div class="tab-pane" id="tab-design">
+        <p class="explanation"><?php echo __('Change the cover of the edition by uploading an image file. The stylesheet to be used for this publication may also be selected. Stylesheet packages (Zip archives) should be uploaded to the <code>webroot/files/styles</code> directory on the server.'); ?></p>
         <strong><?php echo __('Cover'); ?></strong>
         <div id="cover-image" class="row">
           <div class="col-md-3">

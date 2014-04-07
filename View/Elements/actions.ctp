@@ -27,7 +27,7 @@
   <div class="actions col-md-3">
     <div class="panel panel-default sidebar-nav">
       <div class="panel-heading">
-        <h3 class="panel-title"><?php echo __('Actions'); ?></h3>
+        <h3 class="panel-title"><?php echo __('Options'); ?></h3>
       </div>
     	<ul class="nav nav-list">
     	  <?php if ($actions) : ?>

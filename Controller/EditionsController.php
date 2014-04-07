@@ -27,6 +27,14 @@ class EditionsController extends AppController {
         ))
       );
 	  }
+	  if (!$this->Session->check('Edition.view')) {
+  	  $this->Session->write('Edition.view', 'tiles');
+	  }
+	  if (isset($this->params['named']['view']) && $this->params['named']['view'] === 'list') {
+  	  $this->Session->write('Edition.view', 'list');
+	  } else {
+  	  $this->Session->write('Edition.view', 'tiles');
+	  }
     $editions = $this->Paginator->paginate('Edition');
     $this->set(compact('editions'));
 	}

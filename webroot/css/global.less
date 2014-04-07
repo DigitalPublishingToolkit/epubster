@@ -60,6 +60,11 @@ input, textarea {
     }
   }
   
+  .explanation {
+    color: @darkgrey;
+    padding-bottom: 20px;
+  }
+  
   .page-title {
     display: block;
     width: 100%;
@@ -94,7 +99,7 @@ input, textarea {
     .markItUpPreviewFrame {
       border: 1px solid #ccc;
       border-radius: 4px;
-      height: 640px;
+      height: 340px;
 /*
       position: absolute;
       bottom: -5px;
@@ -142,7 +147,7 @@ input, textarea {
   .markdown-editor {
     font-family: "Droid Sans Mono";
     width: 100%;
-    height: 600px;
+    height: 300px;
   }
   
   #rich-text-preprocessor {
@@ -243,6 +248,7 @@ input, textarea {
     
     #cover-image-current {
       background-size: cover;
+      background: @lightgrey;
     }
     
     #cover-image-upload {
@@ -434,6 +440,65 @@ input, textarea {
         content: '';
       }
     }
+  }
+}
+
+.edition-tile-sort {
+  .clearfix;
+  margin-bottom: 30px;
+  
+  .fa {
+    margin-right: 5px;
+  }
+  
+  .caret {
+    visibility: hidden;
+    margin-left: 10px;
+  }
+  
+  .asc .caret {
+    border-bottom: 4px solid #000; 
+    border-top: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    visibility: visible;
+  }
+}
+
+.edition-tile {
+  position: relative;
+  margin-bottom: 20px;
+  
+  .edition-tile-cover {
+    border: 1px solid @grey;
+    background: @lightgrey;
+    border-radius: 4px;
+    width: 140px;
+    height: 195px;
+    display: block;
+    position: absolute;
+    background-size: cover;
+  }
+  
+  .edition-tile-body {
+    padding-left: 150px;
+    padding-bottom: 50px;
+    min-height: 195px;
+    
+    h2 {
+      font-size: 16px;
+      line-height: 16px;
+      margin: 0;
+      margin-bottom: 10px;
+      padding: 0;
+    }
+  }
+  
+  .edition-tile-buttons {
+/*
+    position: absolute;
+    bottom: 0;
+*/
   }
 }
 

@@ -6,7 +6,7 @@
                 <h4 class="modal-title"><i class="fa fa-magic"></i> <?php echo __('Insert Rich Text'); ?></h4>
               </div>
               <div class="modal-body">
-                <p><?php echo __('Paste formatted text from Microsoft Word, or any other text editor, into the textarea below and it will be automatically converted to Markdown upon insertion.'); ?></p>
+                <p><?php echo __('Paste formatted text from Microsoft Word, or any other word processor, into the textarea below and it will be automatically converted to Markdown upon insertion.'); ?></p>
                 <p><?php echo __('Please note that conversion to Markdown will not be able to parse all style characteristics, manual editing is still required.'); ?></p>
                 <div class="form-group">
                   <div id="rich-text-preprocessor" class="form-control" contenteditable="true"></div>

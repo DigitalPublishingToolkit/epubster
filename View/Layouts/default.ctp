@@ -87,7 +87,7 @@
             <?php endif; ?>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><?php echo $this->Html->link('<i class="fa fa-power-off"></i> '.__('Log out'), array('controller' => 'users', 'action' => 'logout'), array('escape' => false)); ?></li>
+            <li><?php echo $this->Html->link('<i class="fa fa-sign-out"></i> '.__('Log out'), array('controller' => 'users', 'action' => 'logout'), array('escape' => false)); ?></li>
           </ul>
           
         </div>
@@ -102,7 +102,7 @@
 		</div>
 	  <?php if ($this->view !== 'markdown_preview') : ?>
 		<footer id="footer">
-		  Version 1.5
+		  Version <?php echo EPUBSTER_VERSION; ?>
 		</footer>
 		<?php endif; ?>
 	</div>

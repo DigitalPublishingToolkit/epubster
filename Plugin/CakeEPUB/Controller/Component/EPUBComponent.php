@@ -14,7 +14,7 @@ class EPUBComponent extends Component {
   			if (!class_exists('EPub')) {
   				App::import('Vendor', 'CakeEPUB.PHPePub/EPub');
   			}
-  			$this->EPUB = new EPub();
+  			$this->EPUB = new EPub(EPub::BOOK_VERSION_EPUB3, "en", EPub::DIRECTION_LEFT_TO_RIGHT);
   		}  	  
       $content_start =
       "<?xml version=\"1.0\"?>
@@ -27,14 +27,14 @@ class EPUBComponent extends Component {
       
       $this->bookend = "</body>\n</html>\n";
       $this->EPUB->setTitle($contents['Edition']['name']);
-      $this->EPUB->setIdentifier("http://JohnJaneDoePublications.com/books/TestBook.html", EPub::IDENTIFIER_URI); // Could also be the ISBN number, prefered for published books, or a UUID.
+      $this->EPUB->setIdentifier($contents['Edition']['identifier'], EPub::IDENTIFIER_ISBN);
       $this->EPUB->setLanguage("en");
       $this->EPUB->setDescription($contents['Edition']['description']);
       $this->EPUB->setAuthor($contents['Edition']['author'], $contents['Edition']['author']);
       $this->EPUB->setPublisher($contents['Edition']['publisher'], $contents['Edition']['publisher_website']);
       $this->EPUB->setDate(time());
-      $this->EPUB->setRights("Copyright");
-      $this->EPUB->setSourceURL("http://example.com");
+      $this->EPUB->setRights("Copyright ".date('Y'));
+      $this->EPUB->setSourceURL($contents['Edition']['website']);
       
       if ($cssFile) {
         if (file_exists($cssFile)) {
@@ -67,7 +67,7 @@ class EPUBComponent extends Component {
                         }
                         $subDirectoryFileName = substr($subDirectoryFile, strrpos($subDirectoryFile, "/")+1);
                         $subDirectoryFileData = file_get_contents($subDirectoryFile);
-                        $this->EPUB->addFile($directoryName.DS.$subDirectoryFileName, 'file_'.$subDirectoryFileName, $subDirectoryFileData, $mimetype);
+                        $this->EPUB->addFile($directoryName.DS.$subDirectoryFileName, 'file_'.$subDirectoryFileName.uniqid(), $subDirectoryFileData, $mimetype);
                       }
                     }
                   }
