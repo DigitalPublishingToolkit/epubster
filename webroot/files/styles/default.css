@@ -2,8 +2,6 @@
   Title: Default
 */
 
-@import url("Droid-Sans/stylesheet.css");
-
 body {
   font-family: "Droid Sans", "Helvetica Neue", "Helvetica", sans-serif;
   font-size: 1em;
@@ -41,4 +39,19 @@ h6 {
 
 blockquote {
   font-style: italic;
+}
+
+/* Droid Sans */
+@font-face {
+  font-family: 'Droid Sans';
+  font-weight: normal;
+  font-style: normal;
+  src:url('DroidSans/DroidSans.ttf');
+}
+
+@font-face {
+  font-family: 'Droid Sans';
+  font-weight: bold;
+  font-style: normal;
+  src:url('DroidSans/DroidSans-Bold.ttf');
 }

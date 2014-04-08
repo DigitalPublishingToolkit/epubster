@@ -91,7 +91,7 @@ class Edition extends AppModel {
   public function getStyles() {
     $styleDir = new Folder(WWW_ROOT.'/files/styles/');
     $files = $styleDir->find('.*\.zip');
-    $styles = array('default' => 'default');
+    $styles = array('default.zip' => 'default');
     foreach ($files as $file) {
       $file = new File($styleDir->pwd() . DS . $file);
       if ($file->name !== 'default.zip') {

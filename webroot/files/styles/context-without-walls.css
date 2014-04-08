@@ -2,9 +2,6 @@
   Title: Context Without Walls
 */
 
-@import url("Libre Baskerville/stylesheet.css");
-@import url("Cabin/stylesheet.css");
-
 body {
   font-family: "Libre Baskerville", "Times", "Times New Roman", serif;
   font-size: 1.125em;
@@ -82,4 +79,83 @@ blockquote {
 
 .note:hover, .note a:hover, .definition:hover, .definition a:hover, .note:active, .note a:active, .definition:active, .definition a:active {
   color: #89D7A5;
+}
+
+/* Libre Baskerville */
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-weight: normal;
+  font-style: normal;
+  src:url('LibreBaskerville/LibreBaskerville-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-weight: normal;
+  font-style: italic;
+  src:url('LibreBaskerville/LibreBaskerville-Italic.ttf');
+}
+
+@font-face {
+  font-family: 'Libre Baskerville';
+  font-weight: bold;
+  font-style: normal;
+  src:url('LibreBaskerville/LibreBaskerville-Bold.ttf');
+}
+
+/* Cabin */
+@font-face {
+  font-family: 'Cabin';
+  font-weight: normal;
+  font-style: normal;
+  src:url('Cabin/Cabin-Regular.otf');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-weight: normal;
+  font-style: italic;
+  src:url('Cabin/Cabin-Italic.otf');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-weight: 500;
+  font-style: normal;
+  src:url('Cabin/Cabin-Medium.otf');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-weight: 500;
+  font-style: italic;
+  src:url('Cabin/Cabin-MediumItalic.otf');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-weight: 600;
+  font-style: normal;
+  src:url('Cabin/Cabin-SemiBold.otf');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-weight: 600;
+  font-style: italic;
+  src:url('Cabin/Cabin-SemiBoldItalic.otf');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-weight: 700;
+  font-style: normal;
+  src:url('Cabin/Cabin-Bold.otf');
+}
+
+@font-face {
+  font-family: 'Cabin';
+  font-weight: 700;
+  font-style: italic;
+  src:url('Cabin/Cabin-BoldItalic.otf');
 }
