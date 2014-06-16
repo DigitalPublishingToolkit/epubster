@@ -84,7 +84,7 @@
         <?php endif; ?>         
       </div>
       <div class="tab-pane" id="tab-content">
-        <p class="explanation"><?php echo __('Create sections below using <a href="https://daringfireball.net/projects/markdown/">Markdown</a> or just plain text. Images may also be included here using the upload function and relevant Markdown syntax for including media.'); ?></p>
+        <p class="explanation"><?php echo __('Create sections below using <a href="https://daringfireball.net/projects/markdown/">Markdown</a> or use the <a href="http://en.wikipedia.org/wiki/WYSIWYG">WYSIWYG</a> editor. Images may also be included here using the upload function and relevant Markdown syntax for including media.'); ?></p>
         <?php
         	echo $this->Form->input('chapters', array('div' => array('class' => 'form-group'), 'label' => __('Select a section'), 'class' => 'form-control', 'options' => $chapters));
         ?>

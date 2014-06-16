@@ -260,6 +260,8 @@ class EditionsController extends AppController {
 			  $id = $this->Edition->id;
 			  if (isset($this->request->data['Section'][0]) && trim($this->request->data['Section'][0]['text']) == '') {
   			  $this->request->data['Section'][0]['text'] = __('Sample text');
+			  } else {
+      		$this->request->data['Section'][0]['text'] = $this->Edition->sanitiseText($this->request->data['Section'][0]['text']);
 			  }
 			  
 			  $sections = array(
@@ -300,7 +302,6 @@ class EditionsController extends AppController {
           $this->Edition->Section->delete($section);
 		    }
 		  }
-		
 			if ($this->Edition->save($this->request->data)) {
 		    $sections = $this->Edition->saveNewSections($id, $this->request->data['Section']);
 			  if ($this->Edition->Section->saveMany($sections)) {
@@ -319,8 +320,10 @@ class EditionsController extends AppController {
 		$sections = $this->Edition->find('all', array('conditions' => array('Edition.id' => $id), 'contain' => array('Section' => array('order' => 'Section.order ASC'))));
 		if (!empty($sections) && isset($sections[0]['Section'])) {
   		$sections = $sections[0]['Section'];
+  		foreach ($sections as $index=>$section) {
+    		$sections[$index]['text'] = $this->Edition->sanitiseText($section['text']);
+  		}
 		}
-
     $styles = $this->Edition->getStyles();
     $this->set('styles', $styles);    
     $this->set('id', $id);
