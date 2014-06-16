@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+
 /**
  * Editions Controller
  *
@@ -59,6 +60,126 @@ class EditionsController extends AppController {
 		//return $this->response;
 	}
 	
+	
+	public function cover_test($id=null) {
+	  $this->autoRender = false;
+		if (!$this->Edition->exists($id)) {
+			throw new NotFoundException(__('Invalid edition'));
+		} else {
+  		$options = array('recursive' => -1, 'conditions' => array('Edition.' . $this->Edition->primaryKey => $id));
+  		$edition = $this->Edition->find('first', $options);
+  		
+      $cover = @imagecreatetruecolor(1563, 2000) or exit(__('GD is not installed'));
+  		
+      $stylesZip = EPUB_STYLES.$edition['Edition']['style'];
+      $zip = new ZipArchive;
+      if ($zip->open($stylesZip) === TRUE) {
+      
+        $zipName = pathinfo($stylesZip);
+        $zipName = $zipName['filename'];
+        $tmpStylesPath = TMP.'/styles/'.$zipName.'/';
+        $zip->extractTo($tmpStylesPath);
+        $zip->close();
+        
+        $directory = new Folder($tmpStylesPath);
+        $css = $directory->find('.*\.css', true);
+        $css = array_shift($css);
+        
+        $file = $tmpStylesPath.$css;
+                
+    		if (file_exists($file)) {
+          $colours = array();
+          $fonts = array();
+
+          $file = file_get_contents($file);
+          if (!empty($file)) {
+            $cssParser = new Sabberworm\CSS\Parser($file);
+            $css = $cssParser->parse(); 
+            foreach ($css->getAllSelectors() as $block) {
+              foreach ($block->getRules() as $rule) {
+              
+                //Get colours
+                if ( in_array($rule->getRule(), array('color', 'background', 'background-color')) ) {
+                  $colour = $rule->getValue()->getColor();
+                  if (!empty($colour)) {
+                    $rgb = array();
+                    foreach ($colour as $code) {
+                      $rgb[] = $code->getSize();
+                    }
+                    $rgb = implode(',', $rgb);
+                  }
+                }
+                
+                //Get font definitions
+                if ( in_array($rule->getRule(), array('font-family')) ) {
+                  $font = $rule->getValue()->__toString();
+                  if (strpos($font, ',') !== false) {
+                    $font = explode(',', $font);
+                    $font = array_shift($font);
+                  }
+                  $font = str_replace(' ', "", str_replace('"', "", $font));
+                }                
+              }
+              if ( !in_array($rgb, $colours) ) {
+                $colours[] = $rgb;                
+              }
+
+              if ( !in_array($font, $fonts) ) {
+                $fonts[] = $font;
+              }
+            }
+          }
+    		}
+    		$backgroundColour = array_rand($colours, 1);
+    		$background = explode(',', $colours[$backgroundColour]);
+    		unset($colours[$backgroundColour]);
+        $background = imagecolorallocate($cover, $background[0], $background[1], $background[2]);
+        if (!empty($colours)) {
+      		$titleColour = array_rand($colours, 1);
+      		$title = explode(',', $colours[$titleColour]);          
+      		unset($colours[$titleColour]);
+        } else {
+          $title = array(255, 255, 255);
+        }
+        $title = imagecolorallocate($cover, $title[0], $title[1], $title[2]);
+        
+        $font = $fonts[array_rand($fonts, 1)];
+        $fontPath = $tmpStylesPath.trim($font).'/';
+        
+        $fontDirectory = new Folder($fontPath);
+        $fonts = $fontDirectory->find('.*\.(ttf|otf)', true);
+      } else {
+        $background = imagecolorallocate($cover, 0, 0, 0);
+        $title = imagecolorallocate($cover, 255, 255, 255);
+      }
+
+      imagefill($cover , 0,0 , $background);
+  
+      $font = $fontPath.$fonts[array_rand($fonts)];
+      $boundingBox = imagettfbbox(100, 0, $font, $edition['Edition']['name']);
+      $y = 100+$boundingBox[3]+100;
+      imagettftext($cover, 100, 0, 100, $y, $title, $font, $edition['Edition']['name']);
+
+      $font = $fontPath.$fonts[array_rand($fonts)];
+      $boundingBox = imagettfbbox(70, 0, $font, $edition['Edition']['author']);
+      $y = $y+$boundingBox[3]+120;
+      imagettftext($cover, 70, 0, 100, $y, $title, $font, $edition['Edition']['author']);
+
+      $font = $fontPath.$fonts[array_rand($fonts)];
+      $boundingBox = imagettfbbox(30, 0, $font, $edition['Edition']['author']);
+      
+      $x = ceil((imagesx($cover) - $boundingBox[2]) / 2);
+      $y = imagesy($cover)-$boundingBox[3]-100;
+      imagettftext($cover, 30, 0, $x, $y, $title, $font, $edition['Edition']['publisher']);
+  
+      imagepng($cover, TMP.'/test.png');
+      imagedestroy($cover);
+      
+      $directory = new Folder($tmpStylesPath);
+      $directory->delete();
+		}
+	}
+	
 /**
  * generate method
  *
@@ -73,7 +194,12 @@ class EditionsController extends AppController {
 		}
 		$options = array('conditions' => array('Edition.' . $this->Edition->primaryKey => $id));
 		$edition = $this->Edition->find('first', $options);
+
+		$edition['Edition']['name'] = $this->Edition->sanitiseText($edition['Edition']['name']);
+		$edition['Edition']['description'] = $this->Edition->sanitiseText($edition['Edition']['description']);
+		
 		foreach ($edition['Section'] as $index=>$section) {
+      $edition['Section'][$index]['text'] = $this->Edition->sanitiseText($edition['Section'][$index]['text']);
   		$edition['Section'][$index]['text'] = $this->Markdown->transform($section['text']);		
 		}
  		$cssFile = EPUB_STYLES.$edition['Edition']['style'];
@@ -132,6 +258,10 @@ class EditionsController extends AppController {
 			$this->request->data['Edition']['timestamp'] = date('Y-m-d H:i:s');
 			if ($this->Edition->save($this->request->data)) {
 			  $id = $this->Edition->id;
+			  if (isset($this->request->data['Section'][0]) && trim($this->request->data['Section'][0]['text']) == '') {
+  			  $this->request->data['Section'][0]['text'] = __('Sample text');
+			  }
+			  
 			  $sections = array(
 			    'Edition' => array('id' => $id),
 			    'Section' => $this->request->data['Section'][0]
@@ -217,6 +347,12 @@ class EditionsController extends AppController {
 			throw new NotFoundException(__('Invalid edition'));
 		}
 		$this->request->onlyAllow('post', 'delete');
+		
+		$sections = $this->Edition->find('first', array('conditions' => array('Edition.id' => $id), 'contain' => array('Section' => array('order' => 'Section.order ASC'))));
+		foreach ($sections['Section'] as $section) {
+  		$this->Edition->Section->delete($section['id']);
+		}
+		
 		if ($this->Edition->delete()) {
 			$this->Session->setFlash(__('Edition deleted'), 'default', array('class' => 'alert alert-success'));
 			$this->redirect(array('action' => 'index'));

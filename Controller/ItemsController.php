@@ -65,6 +65,7 @@ class ItemsController extends AppController {
           'size' => $file['size'],
           'edition_id' => $this->params['data']['editionId'],
           'file' => $file,
+          'package' => @$this->params['data']['package'],
           'timestamp' => date('Y-m-d H:i:s')
         )
       );

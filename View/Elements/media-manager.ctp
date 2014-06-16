@@ -7,8 +7,8 @@
               </div>
               <div class="modal-body">
                 <div class="btn-group btn-group-justified">
-                  <a href="" id="toggle-file-uploader" class="btn btn-default disabled"><?php echo __('File Upload'); ?></a>
-                  <a href="" id="toggle-file-library" class="btn btn-default"><?php echo __('Library'); ?></a>
+                  <a href="" id="toggle-file-uploader" class="btn btn-default"><?php echo __('File Upload'); ?></a>
+                  <a href="" id="toggle-file-library" class="btn btn-default disabled"><?php echo __('Library'); ?></a>
                 </div>
 
                 <div id="file-uploader">

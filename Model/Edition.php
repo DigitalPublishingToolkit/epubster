@@ -62,7 +62,7 @@ class Edition extends AppModel {
 			'unique' => false,
 			'conditions' => '',
 			'fields' => '',
-			'order' => '',
+			'order' => 'Section.order ASC',
 			'limit' => '',
 			'offset' => '',
 			'finderQuery' => '',
@@ -117,5 +117,14 @@ class Edition extends AppModel {
       $this->Section->saveAll($data);
     }
     return true;
+  }
+  
+  public function sanitiseText($text=null) {
+    if ($text) {
+  		//Remove Microsoft Word quotes (http://stackoverflow.com/a/6610752/196750)
+  		$text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
+  		$text = preg_replace('/[^(\x20-\x7F)]*/','', $text);
+  		return $text;      
+    }
   }
 }

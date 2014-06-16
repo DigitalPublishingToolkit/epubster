@@ -1,4 +1,8 @@
 var epub;
+var editor;
+var savedSelection;
+var footnote;
+var footnoteValue;
 
 $.fn.extend({
 insertAtCaret: function(myValue){
@@ -29,8 +33,9 @@ insertAtCaret: function(myValue){
 });
 
 function slugify(slug) {
-    return slug
+  return slug
         .toLowerCase()
+        .replace(/.xhtml/,'')        
         .replace(/[^\w ]+/g,'')
         .replace(/ +/g,'-');
 }
@@ -45,6 +50,10 @@ function sectionTabs() {
     event.preventDefault();
     $(this).tab('show');
     $.jStorage.set("selected-tab", $(this).attr('href'));
+    
+    editor.deactivate();
+    setupMediumEditor();
+
   });
 
   $('#section-tabs a#add-new-section').on('click', function (event) {
@@ -55,7 +64,11 @@ function sectionTabs() {
       var tabSlug = slugify(tabTitle);
       $('<li><a href="#section-'+tabSlug+'">'+tabTitle+'</a>').insertBefore('#section-tabs li:last');
       $('#tab-content .tab-content').append(response);
-      $('#section-tabs a[href="#section-'+tabSlug+'"]').tab('show');
+      var tab = '#section-'+tabSlug;
+      $('#section-tabs a[href="'+tab+'"]').tab('show')
+
+      editor.deactivate();
+      setupMediumEditor();
 
       var count = href.match(/\d+$/);
       if (count) {
@@ -69,7 +82,44 @@ function sectionTabs() {
   
   $('select#EditionChapters').on('change', function() {
     var tab = '#section-'+$(this).val();
-    $('#section-tabs a[href="'+tab+'"]').tab('show')
+    $('#section-tabs a[href="'+tab+'"]').tab('show');
+    
+    editor.deactivate();
+    setupMediumEditor();
+
+  });
+  
+  $('.editions .btn-primary[type="submit"]').on('click', function(event) {    
+    $('.form-control-feedback').remove();
+    $('.has-feedback').removeClass('has-success').removeClass('has-error').removeClass('has-feedback');
+    
+    var error = 0;
+    var emptyInput = '';
+    $(':input[required]', '.editions form').each(function(index, element) {
+      var formGroup = $(this).parents('.form-group');
+      formGroup.addClass('has-feedback');
+            
+      if($(this).val() == ''){
+        formGroup.addClass('has-error').append('<span class="fa fa-ban form-control-feedback"></span>');
+        if (index === 0) {
+          emptyInput = $(this);
+        }
+        if(error == 0){ $(this).focus(); }
+        error = 1;
+      } else {
+        formGroup.addClass('has-success').append('<span class="fa fa-check-circle form-control-feedback"></span>');   
+      }
+    });
+
+    if (error == 1) {
+      if (emptyInput) {
+        emptyInput.focus();        
+      }
+      var tab = emptyInput.closest('.tab-pane').attr('id');
+      $('#edition-tabs a[href="#' + tab + '"]').tab('show');
+      $('#form-validation-error').show();
+      event.preventDefault();
+    }
   });
 }
 
@@ -155,10 +205,238 @@ function generateEPUB(id) {
   });
 }
 
-$(document).ready(function() {
+function cleanFootnote(footnote) {
+  if (footnote !== undefined) {
+    return footnote.replace(/\[\^](.*?)\]/, function(str, value) { return value; }); 
+  }
+}
+
+/* Mark index words */
+function Index() {
+  rangy.init();
+
+  this.button = document.createElement('button');
+  this.button.className = 'medium-editor-action';
+  this.button.innerHTML = '<i class="fa fa-thumb-tack"></i>';
+  this.button.onclick = this.onClick.bind(this);
+  
+  this.classApplier = rangy.createCssClassApplier("has-highlight", {
+    elementTagName: 'span',
+    normalize: true
+  });
+}
+
+Index.prototype.onClick = function(node) {
+  this.classApplier.toggleSelection();
+}
+
+Index.prototype.getButton = function() {
+  return this.button;
+}
+
+Index.prototype.checkState = function (node) {
+  var node = $(node);
+  if (node.hasClass('has-highlight')) {
+    this.button.classList.add('medium-editor-button-active');
+  }
+}
+
+/* Poorly cobbled together footnote functions, portions lifted from medium-editor.js (https://github.com/daviferreira/medium-editor/blob/master/dist/js/medium-editor.js) */
+
+function Notes() {
+  this.button = document.createElement('button');
+  this.button.className = 'medium-editor-action';
+  this.button.innerHTML = '<i class="fa fa-comment"></i>';
+  this.button.onclick = this.onClick.bind(this);
+  
+  if ($('.medium-editor-footnote-preview').length === 0) {
+    $("body").append('<div id="medium-editor-footnote-preview-container" class="medium-editor-anchor-preview medium-toolbar-arrow-over" style="top: 973px; left: 632.5px;"><div class="medium-editor-toolbar-anchor-preview" id="medium-editor-toolbar-footnote-preview"><span class="medium-editor-toolbar-footnote-preview-inner"></span></div></div>'); 
+  }
+}
+
+Notes.prototype.onClick = function(node) {
+  if ($('.medium-editor-toolbar-form-note').length === 0) {
+    $(".medium-editor-toolbar").append('<div class="medium-editor-toolbar-form-note"><input type="text" placeholder="Add note..." /><a href="#">×</a></div>'); 
+    if ($('.medium-editor-toolbar-form-note input').val() == '' && footnoteValue !== '') {
+      $('.medium-editor-toolbar-form-note input').val(footnoteValue); 
+    }
+  }
+
+  savedSelection = saveSelection();
+
+  editor.toolbarActions.style.display = 'none';
+  $('.medium-editor-toolbar-form-note').show();
+  editor.keepToolbarAlive = true;
+  $('.medium-editor-toolbar-form-note input').focus();
+  
+  $('.medium-editor-toolbar-form-note a').on('click', function (event) {
+    event.preventDefault();
+    editor.showToolbarActions();
+    $('.medium-editor-toolbar-form-note').hide();
+    $('.medium-editor-toolbar-form-note input').val('');
+    
+    restoreSelection(savedSelection);    
+    var footnote = document.getSelection().anchorNode.parentNode;
+    if ($(footnote).hasClass('has-footnote')) {
+      var text = document.getSelection().anchorNode.nodeValue;
+      footnote.remove();
+      document.execCommand("insertText", false, text);
+    }
+  });
+
+  $('.medium-editor-toolbar-form-note input').on('keyup', function (event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      $(footnote).remove();
+      restoreSelection(savedSelection);
+      var value = $(this).val();
+      if (value) {
+        insertHTMLAtCursor('<span class="has-footnote">'+document.getSelection()+'<span class="inline-footnote-content">[^] '+value+']</span></span>', false);
+        
+        var doubleWrappedFootnotes = $('.has-footnote .has-footnote');
+        if (doubleWrappedFootnotes.length !== 0) {
+          $('.has-footnote .has-footnote').each(function(index, element) {
+            $(this).parent().replaceWith($(this));
+          });
+        }
+      }
+      editor.hideToolbarActions();
+      $('.medium-editor-toolbar-form-note').hide();
+      $('.medium-editor-toolbar-form-note input').val('');
+    }
+  });
+}
+
+Notes.prototype.getButton = function() {
+  return this.button;
+}
+
+Notes.prototype.checkState = function (node) {
+  var node = $(node);
+  if (node.hasClass('has-footnote')) {
+    if (footnote === undefined || footnote === null || footnote === '') {
+      footnote = $('.inline-footnote-content', node); 
+    }
+    footnoteValue = $('.inline-footnote-content', node).first().text();
+    footnoteValue = cleanFootnote(footnoteValue);
+    $('.medium-editor-toolbar-form-note input').val(footnoteValue);
+
+    this.button.classList.add('medium-editor-button-active');
+  }
+}
+
+function previewFootnote() {
+  $( document ).on("mouseenter mouseleave", '.has-footnote', function(event) {
+    var preview = $('#medium-editor-footnote-preview-container');
+    var footnote = cleanFootnote($('.inline-footnote-content', this).text());
+
+    if (event.type === 'mouseenter') {
+      preview.addClass('medium-editor-anchor-preview-active');
+      $('#medium-editor-toolbar-footnote-preview .medium-editor-toolbar-footnote-preview-inner').append('<span class="footnote-preview">'+footnote+'</span>');
+
+      var boundary = $(this).offset();
+      preview.css({
+        'top': boundary.top - (preview.height() + $(this).height())+100,
+        'left': boundary.left - ( preview.width() - $(this).width()  ) /2
+      });
+
+    } else {
+      preview.removeClass('medium-editor-anchor-preview-active');
+      $('#medium-editor-toolbar-footnote-preview .medium-editor-toolbar-footnote-preview-inner span.footnote-preview').remove();
+    }
+  });
+}
+
+// http://stackoverflow.com/questions/5605401/insert-link-in-contenteditable-element
+// by Tim Down
+function saveSelection() {
+  var i,
+      len,
+      ranges,
+      sel = window.getSelection();
+  if (sel.getRangeAt && sel.rangeCount) {
+      ranges = [];
+      for (i = 0, len = sel.rangeCount; i < len; i += 1) {
+          ranges.push(sel.getRangeAt(i));
+      }
+      return ranges;
+  }
+  return null;
+}
+
+function restoreSelection(savedSel) {
+  var i,
+      len,
+      sel = window.getSelection();
+  if (savedSel) {
+      sel.removeAllRanges();
+      for (i = 0, len = savedSel.length; i < len; i += 1) {
+          sel.addRange(savedSel[i]);
+      }
+  }
+}
+
+function setupMediumEditor() {
+  editor = new MediumEditor('.html-editor', {
+    buttons: ['bold', 'italic', 'quote', 'link', 'anchor', 'orderedlist', 'unorderedlist', 'header1', 'header2', 'note', 'index'],
+    buttonLabels : 'fontawesome',
+    forcePlainText: true,
+    placeholder : 'Start writing the content of this section...',
+    extensions: {
+      'note': new Notes(),
+      'index': new Index()
+    }
+  });
+}
+
+function setupEditors() {
+  var currentEditor = $.jStorage.get("current-editor");
+
+  if (currentEditor === 'plain-text') {
+    $('.wysiwyg, .plain-text, .plain-text-editor, .html-editor').toggleClass('hidden');
+    $('.rich-text-processor').toggleClass('disabled');
+  }
+  
+  if ($('.html-editor').length !== 0) {
+    setupMediumEditor();
+        
+    $('.btn-primary').on('click', function(event) {
+      $('.html-editor').each(function(index, element) {
+        $('.inline-footnote-content').show();
+        var id = $(element).attr('id').substr(7);
+        var text = $(element).html().trim();
+        $('#textarea-'+id).val(text);
+      });
+    });
+  }
   $('.markdown-editor').markItUp(mySettings);
+  
+  $('.wysiwyg, .plain-text').on('click', function(event) {
+    $('.wysiwyg, .plain-text, .plain-text-editor, .html-editor').toggleClass('hidden');
+    $('.rich-text-processor').toggleClass('disabled');
+    
+    if ($(this).hasClass('wysiwyg')) {
+      editor.activate();
+      $.jStorage.set("current-editor", 'wysiwyg');
+    } else {
+      $('.html-editor').each(function(index, element) {
+        var id = $(element).attr('id').substr(7);
+        var text = $(element).html().trim();
+        $('#textarea-'+id).val(text);
+      });
+      editor.deactivate();
+      $.jStorage.set("current-editor", 'plain-text');
+    }
+    event.preventDefault();
+  });
+}
+
+$(document).ready(function() {
+  setupEditors();
   sectionTabs();
   sectionSort();
+  previewFootnote();
+  
   $('body').popover({
     selector: '[rel="popover"]',
     html:true

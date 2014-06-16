@@ -11,7 +11,8 @@
   	<tr>
   		<td><?php echo h($edition['Edition']['id']); ?> &nbsp;</td>
   		<td class="title"><?php echo h($edition['Edition']['name']); ?>&nbsp;</td>
-  		<td class="description"><?php echo h($edition['Edition']['description']); ?>&nbsp;</td>
+  		<?php $description = (strlen($edition['Edition']['description']) > 325) ? mb_substr($edition['Edition']['description'], 0, 325).'...': $edition['Edition']['description']; ?>
+  		<td class="description"><?php echo h($description); ?>&nbsp;</td>
   		<td><?php echo h($edition['Edition']['timestamp']); ?>&nbsp;</td>
   		<td class="actions">
   		  <div class="btn-group">

@@ -122,4 +122,15 @@ define('BASE_UPLOAD_PATH', '/files/uploads/');
 define('IMAGE_THUMB_WIDTH', 185);
 define('IMAGE_THUMB_HEIGHT', 100);
 define('IMAGE_MEDIUM_WIDTH', 385);
-define('IMAGE_MEDIUM_HEIGHT', 285); 
+define('IMAGE_MEDIUM_HEIGHT', 285);
+
+// PHP5.3 namespace loader for Cake2.x, taken from http://stackoverflow.com/a/11819715/196750 and http://www.dereuromark.de/2012/08/06/namespaces-in-vendor-files-and-cake2-x/
+spl_autoload_register(function ($class) {
+    foreach (App::path('Vendor') as $base) {
+        $path = $base . str_replace('\\', DS, $class) . '.php';
+        if (file_exists($path)) {
+            include $path;
+            return;
+        }
+    }
+});

@@ -169,6 +169,9 @@ class Item extends AppModel {
 
     // Settings
     $targetDir = UPLOAD_PATH;
+    if ($file['package']) {
+      $targetDir = WWW_ROOT.'/files/styles/';      
+    }
     
     $cleanupTargetDir = true; // Remove old files
     $maxFileAge = 5 * 3600; // Temp file age in seconds

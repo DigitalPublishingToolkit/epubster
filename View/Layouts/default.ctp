@@ -31,6 +31,8 @@
       '/assets/font-awesome/css/font-awesome.min',
       '/assets/markitup/skins/simple/style',
       '/assets/markitup/sets/markdown/style',
+      '/assets/medium-editor/css/medium-editor.min.css',
+      '/assets/medium-editor/css/themes/bootstrap.min.css',
       '/css/global'
     ));
     echo $this->Html->script(array(
@@ -39,8 +41,11 @@
       '/assets/bootstrap/js/bootstrap.min',
       '/assets/spin.min',
       '/assets/jstorage.min',
+      '/assets/rangy/rangy-core',
+      '/assets/rangy/rangy-cssclassapplier',
       '/assets/markitup/jquery.markitup',
       '/assets/markitup/sets/markdown/set',
+      '/assets/medium-editor/js/medium-editor.min',
       '/scripts/global.min'
     ));
 

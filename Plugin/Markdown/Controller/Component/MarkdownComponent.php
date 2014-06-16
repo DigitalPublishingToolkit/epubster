@@ -35,9 +35,11 @@ class MarkdownComponent extends Component {
 			}
 			$this->parser = new Markdown_Parser();
 		}
+    $text = mb_convert_encoding($text, "HTML-ENTITIES", "UTF-8");
 		$text = str_replace("^\r", "<br />", $text);
 		$text = $this->parseEndnotes($text);
-		return $this->parser->transform($text);
+		$text = $this->parser->transform($text);
+		return $text;
 	}
 
 /**
@@ -52,14 +54,15 @@ class MarkdownComponent extends Component {
       foreach ($matches[0] as $index=>$match) {
         $endnote = trim($matches[1][$index]);
         $endnoteNumber = $index+1;
+        //$text = preg_replace('/'.$match.'/', sprintf(' <small class="note">[<a class="note-backref" id="note-backref-%1$d" href="#note-%1$d">%1$d</a>]</small>', $endnoteNumber), $text, 1);
         $text = str_replace($match, sprintf(' <small class="note">[<a class="note-backref" id="note-backref-%1$d" href="#note-%1$d">%1$d</a>]</small>', $endnoteNumber), $text);
         if ($index === 0) {
-          $text .= "\r\rNotes\n--------\n";
+          $text .= "\r\r<section class=\"section-notes\"><ol>\n";
         }
-        $text .= sprintf('%1$d. %2$s <a class="note" id="note-%1$d" href="#note-backref-%1$d">&#8617;</a>'."\n", $endnoteNumber, $endnote);
+        $text .= sprintf('<li>%2$s <a class="note" id="note-%1$d" href="#note-backref-%1$d">&#8617;</a></li>'."\n", $endnoteNumber, $endnote);
       }
     }
-	  return $text;
+	  return $text.'</ol></section>';
 	}
 }
 ?>

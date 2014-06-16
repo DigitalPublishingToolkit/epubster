@@ -1,3 +1,5 @@
+<div id="form-validation-error" class="alert alert-danger"><?php echo __('Please fill out all the required metadata'); ?></div>
+
 <div id="content" class="row">
   
   <?php echo $this->element('actions'); ?>
@@ -22,28 +24,42 @@
         <p class="explanation"><?php echo __('Please fill in the required metadata below, this data is used by e-readers to build a collection of EPUBs.'); ?></p>
       
         <?php
-      		echo $this->Form->input('name', array('div' => array('class' => 'form-group'), 'label' => __('Title of the publication'), 'class' => 'form-control'));
-      		echo $this->Form->input('description', array('div' => array('class' => 'form-group'), 'label' => __('Description'), 'class' => 'form-control'));
+      		echo $this->Form->input('name', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Title of the publication'), 'class' => 'form-control'));
+      		echo $this->Form->input('description', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Description'), 'class' => 'form-control'));
         ?>
         
         <div class="row">
-        <?php
-      		echo $this->Form->input('author', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Author(s)'), 'class' => 'form-control'));
-      		echo $this->Form->input('website', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Website'), 'class' => 'form-control'));
-        ?>
-        </div>
-        
-        <div class="row">
-        <?php
-      		echo $this->Form->input('publisher', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Publisher'), 'class' => 'form-control'));
-      		echo $this->Form->input('publisher_website', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Publisher website'), 'class' => 'form-control'));
-        ?>
-        </div>
-        
-        <div class="row">
-          <?php 
-        		echo $this->Form->input('identifier', array('div' => array('class' => 'form-group col-md-6'), 'label' => __('Identifier (ISBN)'), 'class' => 'form-control'));       
+          <div class="col-md-6">
+            <?php
+          		echo $this->Form->input('author', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Author(s)'), 'class' => 'form-control'));
+            ?>
+          </div>
+          <div class="col-md-6">
+          <?php
+        		echo $this->Form->input('website', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Website'), 'class' => 'form-control'));
           ?>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+          <?php
+        		echo $this->Form->input('publisher', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Publisher'), 'class' => 'form-control'));
+          ?>
+        </div>
+          <div class="col-md-6">
+          <?php
+        		echo $this->Form->input('publisher_website', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Publisher website'), 'class' => 'form-control'));
+          ?>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <?php 
+          		echo $this->Form->input('identifier', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Identifier (ISBN)'), 'class' => 'form-control'));       
+            ?>
+          </div>
         </div>
         
       </div>
@@ -55,7 +71,7 @@
         <ul id="section-sorting">
           <?php $count=0; ?>
           <?php foreach ($sections as $section) : ?>
-          <li id="section-<?php echo $section['id']; ?>" class="ui-state-default"><span class="section-prefix"><span class="fa fa-sort"></span></span> <span class="section-label"><?php echo $section['title']; ?></span> <a href="#" id="section-delete-<?php echo $section['id']; ?>" class="section-delete"<?php echo ($count === 0) ? ' style="display : none;"': ''; ?>><span class="fa fa-times"></span> Remove chapter</a></li>
+          <li id="section-<?php echo $section['id']; ?>" class="ui-state-default"><span class="section-prefix"><span class="fa fa-sort"></span></span> <span class="section-label"><?php echo $section['title']; ?></span> <a href="#" id="section-delete-<?php echo $section['id']; ?>" class="section-delete"<?php echo ($count === 0) ? ' style="display : none;"': ''; ?>><span class="fa fa-times"></span> <?php echo __('Remove section'); ?></a></li>
           <?php $count++; ?>
           <?php endforeach; ?>
         </ul>
@@ -76,8 +92,9 @@
       	<ul class="nav nav-tabs" id="section-tabs">
         <?php $count=0; ?>
       	<?php foreach ($sections as $section) : ?>
-      	  <?php $anchor = Inflector::slug(strtolower($section['title']), '-'); ?>
-      	  <?php $title = (strlen($section['title']) > 10) ? substr($section['title'], 0, 10).'...': $section['title']; ?>
+      	  <?php $anchor = Inflector::slug(strtolower($section['title']), ''); ?>
+      	  <?php $title = $section['title']; ?>
+      	  <?php $title = (strlen($section['title']) > 10) ? mb_substr($title, 0, 10).'...': $title; ?>
           <li<?php echo ($count === 0) ? ' class="active"': ''; ?>><a href="#section-<?php echo $anchor; ?>" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $section['title']; ?>"><?php echo $title; ?></a></li>
           <?php $count++; ?>
         <?php endforeach; ?>
@@ -117,9 +134,18 @@
             <span class="fa fa-plus"></span> <?php echo __('Add new cover'); ?>
           </div>
         </div>
-        <?php
-        	echo $this->Form->input('style', array('div' => array('class' => 'form-group'), 'class' => 'form-control', 'options' => $styles));
-        ?>
+        
+        <label for="EditionStyle"><?php echo __('Style'); ?></label>
+        <div id="edition-style-select-group" class="form-group">
+          <div id="edition-style-select">
+            <?php
+            	echo $this->Form->input('style', array('div' => array('class' => 'form-group'), 'label' => false, 'class' => 'form-control ', 'options' => $styles));
+            ?>
+          </div>
+          <a href="javascript:;" id="edition-style-upload" class="btn btn-default edition-style-uploader">
+            <span class="fa fa-cloud-upload"></span> <?php echo __('New style package'); ?>
+          </a>
+        </div>
       </div>
     </div>
 	</fieldset>

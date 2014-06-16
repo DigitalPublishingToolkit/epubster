@@ -144,10 +144,65 @@ input, textarea {
     }
   }
   
-  .markdown-editor {
-    font-family: "Droid Sans Mono";
+  .markdown-editor, .html-editor {
     width: 100%;
     height: 300px;
+  }
+  
+  .markdown-editor {
+    font-family: "Droid Sans Mono";
+  }
+  
+  .html-editor {
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 6px 12px;
+    min-height: 300px;
+    height: auto;
+    
+    &:after {
+      color: @darkgrey;
+      padding: 6px 12px;      
+    }
+    
+    .has-footnote {
+      background: #c2def6;
+      border-radius: 4px;
+      padding-left: 4px;
+      padding-right: 4px;
+      
+      &:hover {
+        color: #2a6496;
+      }
+    }
+    
+    img {
+      max-width: 100%;
+    }
+
+    .has-highlight {
+      background: #f5efc2;
+      border-radius: 4px;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    
+    .inline-footnote-content {
+      width: 0px;
+      height: 0px;
+      overflow: hidden;
+      display: inline-block !important;
+    }
+  }
+  
+  .html-editor, .plain-text-editor {
+    margin-top: 10px;
+  }
+  
+  .toggle-editor {
+    margin-left: 8px;
   }
   
   #rich-text-preprocessor {
@@ -247,7 +302,8 @@ input, textarea {
     }
     
     #cover-image-current {
-      background-size: cover;
+      background-repeat: no-repeat;
+      background-size: contain;
       background: @lightgrey;
     }
     
@@ -262,6 +318,20 @@ input, textarea {
       &:hover, &:active {
         background: #e9e8e8;
       }
+    }
+  }
+  
+  #edition-style-select-group {
+    .clearfix;
+    
+    #edition-style-select {
+      float: left;
+      width: 78%;
+    }
+    
+    .edition-style-uploader {
+      width: 20%;
+      float: right;
     }
   }
   
@@ -481,6 +551,7 @@ input, textarea {
   }
   
   .edition-tile-body {
+    font-size: 12px;
     padding-left: 150px;
     padding-bottom: 50px;
     min-height: 195px;
@@ -502,6 +573,10 @@ input, textarea {
   }
 }
 
+#form-validation-error {
+  display: none;
+}
+
 #footer {
   font-family: "Droid Sans Mono";
   font-size: 10px;
@@ -509,4 +584,72 @@ input, textarea {
   text-align: right;
   margin-top: 30px;
   border-top: 1px solid #ddd;
+}
+
+/* !Medium Editor */
+.medium-editor-toolbar li button, .medium-editor-toolbar-form-anchor input {
+  min-width: 50px;
+  height: 50px;
+}
+
+.medium-toolbar-arrow-under:after {
+  top: 50px;
+}
+
+.medium-editor-toolbar-form-note {
+  background: #428bca;
+  color: #fff;
+  border-radius: 4px;
+  position: relative;
+  padding-right: 35px;
+}
+
+.medium-editor-toolbar-form-note input {
+  font-size: 14px;
+  height: 50px;
+  width: 350px;
+  padding-left: 8px;
+  background: #428bca;
+  color: #fff;
+  border: 0;
+  outline: none;
+}
+
+.medium-editor-toolbar-form-note input::-webkit-input-placeholder {
+  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.medium-editor-toolbar-form-note input:-moz-placeholder {
+  /* Firefox 18- */
+  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.medium-editor-toolbar-form-note input::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.medium-editor-toolbar-form-note input:-ms-input-placeholder {
+  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.medium-editor-toolbar-form-note a {
+  color: #fff;
+  display: inline-block;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bolder;
+  font-size: 24px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.medium-editor-toolbar-footnote-preview-inner {
+  padding: 10px;
+  display: block;
 }

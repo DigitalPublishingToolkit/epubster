@@ -23,7 +23,7 @@
 
     "use strict";
     if (parent.epub) {
-      var Book = ePub(parent.epub);              
+      var Book = ePub(parent.epub, { spreads : false });              
 
       Book.getMetadata().then(function(meta){
         document.title = meta.bookTitle+" – "+meta.creator;      
@@ -60,12 +60,12 @@
       });
 
       $('#toggle-columns').on('click', function(event) {
-        if ($('#reader iframe').hasClass('single')) {
-          $('#reader iframe').css('width','100%');
+        if ($('#reader').hasClass('single')) {
+          $('#reader').css('width','100%');
         } else {
-          $('#reader iframe').css('width','80%');
+          $('#reader').css('width','90%');
         }
-        $('#reader iframe').toggleClass('single');
+        $('#reader').toggleClass('single');
         event.preventDefault();
       });
 

@@ -28,7 +28,9 @@
   	  </a>
   	  <div class="edition-tile-body">
         <h2><?php echo h($edition['Edition']['name']); ?></h2>
-        <p><?php echo h($edition['Edition']['description']); ?></p>
+    		<?php $description = (strlen($edition['Edition']['description']) > 325) ? mb_substr($edition['Edition']['description'], 0, 325).'...': $edition['Edition']['description']; ?>
+
+        <p><?php echo h($description); ?></p>
         
         <div class="edition-tile-buttons btn-group">
         	<?php echo $this->Html->link('<span class="fa fa-eye"></span> '.__('View'), array('action' => 'view', $edition['Edition']['id']), array('class' => 'btn btn-default btn-xs', 'escape' => false)); ?><?php echo $this->Html->link('<span class="fa fa-edit"></span> '.__('Edit'), array('action' => 'edit', $edition['Edition']['id']), array('class' => 'btn btn-default btn-xs', 'escape' => false)); ?><?php echo $this->Form->postLink('<span class="fa fa-trash-o"></span> '.__('Delete'), array('action' => 'delete', $edition['Edition']['id']), array('class' => 'btn btn-default btn-xs', 'escape' => false), __('Are you sure you want to delete # %s?', $edition['Edition']['id'])); ?>

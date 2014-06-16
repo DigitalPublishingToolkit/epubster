@@ -95,7 +95,7 @@ class EPUBComponent extends Component {
       foreach ($contents['Section'] as $section) {
         $content = $content_start.$section['text'].$this->bookend;
         $title = (!empty($section['title'])) ? $section['title']: 'No Title';
-        $filename = Inflector::slug($section['title'], '-').'.html';
+        $filename = Inflector::slug($section['title'], '-').'.xhtml';
         //Fetching external images creates ugly file path at the moment
         $this->EPUB->addChapter($title, $filename, $content, true, EPub::EXTERNAL_REF_ADD);
       } 	  

@@ -1,6 +1,60 @@
+/* Taken from http://stackoverflow.com/a/6691294/196750 */
+function insertHTMLAtCursor(html, selectPastedContent) {
+  var sel, range;
+  if (window.getSelection) {
+    // IE9 and non-IE
+    sel = window.getSelection();
+    if (sel.getRangeAt && sel.rangeCount) {
+      range = sel.getRangeAt(0);
+      range.deleteContents();
+
+      // Range.createContextualFragment() would be useful here but is
+      // only relatively recently standardized and is not supported in
+      // some browsers (IE9, for one)
+      var el = document.createElement("div");
+      el.innerHTML = html;
+      var frag = document.createDocumentFragment(), node, lastNode;
+      while ( (node = el.firstChild) ) {
+        lastNode = frag.appendChild(node);
+      }
+      var firstNode = frag.firstChild;
+      range.insertNode(frag);
+
+      // Preserve the selection
+      if (lastNode) {
+        range = range.cloneRange();
+        range.setStartAfter(lastNode);
+        if (selectPastedContent) {
+          range.setStartBefore(firstNode);
+        } else {
+          range.collapse(true);
+        }
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  } else if ( (sel = document.selection) && sel.type != "Control") {
+      // IE < 9
+      var originalRange = sel.createRange();
+      originalRange.collapse(true);
+      sel.createRange().pasteHTML(html);
+      if (selectPastedContent) {
+        range = sel.createRange();
+        range.setEndPoint("StartToStart", originalRange);
+        range.select();
+      }
+  }
+}
+
 function addMarkdownSyntax(file) {
   if (file !== undefined) {
     return '!['+file.caption+']('+UPLOAD_URL+file.name+' "'+file.caption+'")';    
+  }
+}
+
+function addHTMLSyntax(file) {
+  if (file !== undefined) {
+    return '<img src="'+UPLOAD_URL+file.name+'" alt="'+file.caption+'">';
   }
 }
 
@@ -59,7 +113,6 @@ function mediaManager() {
     	container: 'file-uploader',
     	max_file_size : '10mb',
     	url : SITE_URL+"/items/file_upload",
-    	resize : {width : 320, height : 240, quality : 90},
     	flash_swf_url : SITE_URL+'/assets/plupload/plupload.flash.swf',
     	silverlight_xap_url : SITE_URL+'/assets/plupload.silverlight.xap',
     	filters : [
@@ -139,7 +192,12 @@ function mediaManager() {
   	  for (var i in files) {
   	    var file = files[i];
         var file = {name: file.name, caption : file.name};
-  	    var filename = addMarkdownSyntax(file);
+        if ($('.html-editor:visible').length !== 0) {
+          var filename = addHTMLSyntax(file);    
+        } else {
+          var filename = addMarkdownSyntax(file);
+        }
+
   	    fileList.push(filename);
   	  }
   	  $("#insert-media").removeClass('disabled');
@@ -155,28 +213,38 @@ function mediaManager() {
     });
     
     $("#insert-media").on('click', function(event) {
-      if ($.type(fileList) === "object") {
-        var newFileList = [];       
+      if (fileList[0] === undefined) {
+        var newFileList = [];
         for (var fileId in fileList) {
           var file = fileList[fileId]
-          var file = addMarkdownSyntax(file);
+          if ($('.html-editor:visible').length !== 0) {
+            var file = addHTMLSyntax(file);            
+          } else {
+            var file = addMarkdownSyntax(file); 
+          }
           newFileList.push(file);
         }
-        var markdown = newFileList.join("\n")+"\n";
+        var images = newFileList.join("\n")+"\n";
       } else {
-        var markdown = fileList.join("\n")+"\n";        
+        var images = fileList.join("\n")+"\n";        
       }
-      $('textarea.text-editor:visible').insertAtCaret(markdown);
+      if ($('.html-editor:visible').length !== 0) {
+        insertHTMLAtCursor(images, false);
+      } else {
+        $('textarea.text-editor:visible').insertAtCaret(images); 
+      }
       $('#media-manager').modal('hide');
-      $('#modal-toggles a').removeClass('disabled');
+      $('.modal-toggles a').removeClass('disabled');
     });
     
-    $('.btn-group a').on('click', function(event) {
+    $('#media-manager .btn-group a').on('click', function(event) {
       if (!$(this).hasClass('disabled')) {
-        $('.btn-group a').toggleClass('disabled');
+        $('#media-manager .btn-group a').toggleClass('disabled');
         $('#file-uploader, #file-library').toggle();
         if ($(this).attr('id') === 'toggle-file-library') {
           getFileLibrary();
+        } else {
+          $('#insert-media').addClass('disabled');
         }
       }
       event.preventDefault();
@@ -218,12 +286,16 @@ function mediaManager() {
       $('#upload-files').hide();
       $('ul#files li').remove();
       uploader.refresh();
-      fileList = '';   
+      fileList = [];   
       $('#file-library a.thumbnail').removeClass('selected');
-      $('#modal-toggles a').removeClass('disabled');
+      $('.modal-toggles a').removeClass('disabled');
+      if ($('.html-editor:visible').length !== 0) {
+        $('.rich-text-processor').addClass('disabled');
+      }
     });
     
     $('#media-manager').on('show.bs.modal', function () {
+      $('#file-uploader').hide();
       getFileLibrary();
     });
   }
@@ -237,7 +309,6 @@ function coverUploader() {
   	drop_element : 'cover-image-upload',
   	max_file_size : '10mb',
   	url : SITE_URL+"/items/file_upload",
-  	resize : {width : 320, height : 240, quality : 90},
   	flash_swf_url : SITE_URL+'/assets/plupload/plupload.flash.swf',
   	silverlight_xap_url : SITE_URL+'/assets/plupload.silverlight.xap',
   	filters : [
@@ -290,9 +361,47 @@ function coverUploader() {
   });
 }
 
+function stylePackageUploader() {
+  var uploader = new plupload.Uploader({
+  	runtimes : 'html5,gears,flash,silverlight,browserplus',
+  	browse_button : 'edition-style-upload',
+  	container: 'edition-style-select-group',
+  	max_file_size : '10mb',
+  	url : SITE_URL+"/items/file_upload",
+  	flash_swf_url : SITE_URL+'/assets/plupload/plupload.flash.swf',
+  	silverlight_xap_url : SITE_URL+'/assets/plupload.silverlight.xap',
+  	filters : [
+  		{title : "Zip files", extensions : "zip"}
+  	],
+    multipart_params : {
+      'editionId' : $('input#EditionId').val(), 
+      'package' : true
+    }
+  });
+  uploader.init();
+  
+  uploader.bind('FilesAdded', function(up, files) {
+    up.start();
+  });
+
+  uploader.bind('UploadComplete', function(up, files) {
+    $('#edition-style-upload').removeClass('disabled');
+    $('#edition-style-upload span.fa-spinner').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-cloud-upload');
+    var uploadedFile = files[0].name;
+    var uploadedFileName = uploadedFile.substr(0, uploadedFile.lastIndexOf('.zip'));
+    $('#EditionStyle').append('<option name="'+files[0].name+'">'+uploadedFileName+'</option>');
+  });
+
+  uploader.bind('BeforeUpload', function(up, files) {
+    $('#edition-style-upload').addClass('disabled');
+    $('#edition-style-upload span.fa-cloud-upload').removeClass('fa-cloud-upload').addClass('fa-spinner').addClass('fa-spin');
+  });
+}
+
 $(document).ready(function() {
   mediaManager();
   coverUploader();
+  stylePackageUploader();
   $('body').tooltip({
     selector: '[data-toggle=tooltip]'
   });
