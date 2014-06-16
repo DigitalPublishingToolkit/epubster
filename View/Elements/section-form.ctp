@@ -33,6 +33,8 @@
          <div class="html-editor" id="editor-<?php echo 'Section-'.$count.'-text'; ?>">
           <?php echo $section['text']; ?>
          </div>
+         <p class="text-muted"><small><?php echo __('In WYSIWYG-mode, use <code>Shift+Enter</code> to create line breaks and <code>Enter</code> to create a new paragraph.'); ?></small></p>
+
          <div class="plain-text-editor hidden">
          <?php
             echo $this->Form->input('Section.'.$count.'.text', array('div' => array('class' => 'form-group'), 'label' => false, 'class' => 'form-control', 'id' => 'textarea-Section-'.$count.'-text', 'required' => false, 'class' => 'markdown-editor form-control text-editor', 'rows' => 20, 'type' => 'textarea', 'data-placeholder' => __('Start writing the content of this section...'), 'value' => $section['text']))
