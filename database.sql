@@ -23,6 +23,7 @@ CREATE TABLE `editions` (
   `description` text,
   `cover` text,
   `style` tinytext,
+  `index` tinyint(1),
   `timestamp` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

@@ -22,7 +22,7 @@
       <div class="tab-pane active" id="tab-about">
 
         <p class="explanation"><?php echo __('Please fill in the required metadata below, this data is used by e-readers to build a collection of EPUBs.'); ?></p>
-      
+
         <?php
       		echo $this->Form->input('name', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Title of the publication'), 'class' => 'form-control'));
       		echo $this->Form->input('description', array('div' => array('class' => 'form-group'), 'required', 'label' => __('Description'), 'class' => 'form-control'));
@@ -85,14 +85,20 @@
       </div>
       <div class="tab-pane" id="tab-content">
         <p class="explanation"><?php echo __('Create sections below using <a href="https://daringfireball.net/projects/markdown/">Markdown</a> or use the <a href="http://en.wikipedia.org/wiki/WYSIWYG">WYSIWYG</a> editor. Images may also be included here using the upload function and relevant Markdown syntax for including media.'); ?></p>
+        
+        <?php
+      		echo $this->Form->input('index', array('div' => array('class' => 'form-group checkbox'), 'label' => __('Generate an alphabetical index with backreferences based on highlighted words in the edition.'), 'value' => 1, 'type' => 'checkbox'));
+      	?>
+        <br />
         <?php
         	echo $this->Form->input('chapters', array('div' => array('class' => 'form-group'), 'label' => __('Select a section'), 'class' => 'form-control', 'options' => $chapters));
         ?>
         <br />
+        
       	<ul class="nav nav-tabs" id="section-tabs">
         <?php $count=0; ?>
       	<?php foreach ($sections as $section) : ?>
-      	  <?php $anchor = Inflector::slug(strtolower($section['title']), ''); ?>
+      	  <?php $anchor = Inflector::slug(strtolower($section['title']), '-'); ?>
       	  <?php $title = $section['title']; ?>
       	  <?php $title = (strlen($section['title']) > 10) ? mb_substr($title, 0, 10).'...': $title; ?>
           <li<?php echo ($count === 0) ? ' class="active"': ''; ?>><a href="#section-<?php echo $anchor; ?>" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $section['title']; ?>"><?php echo $title; ?></a></li>
@@ -100,7 +106,7 @@
         <?php endforeach; ?>
           <li><a id="add-new-section" href="<?php echo $this->Html->url(array('controller' => 'sections', 'action' => 'create_section', 'edition' => $id, 'count' => $count)); ?>" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo __('Create new section'); ?>"><strong><i class="fa fa-plus"></i></strong></a></li>
       	</ul>
-        
+      	        
         <div class="tab-content">
         <?php echo $this->element('media-manager'); ?>
         <?php echo $this->element('rich-text-processor'); ?>
@@ -151,5 +157,13 @@
 	</fieldset>
 	<?php echo $this->Form->input('<span class="fa fa-check"></span> '.__('Save edition'), array('div' => array('class' => 'form-footer'), 'class' => 'btn btn-default btn-primary', 'label' => false, 'type' => 'button')); ?>
   <?php echo $this->Form->end(); ?>
+  </div>
+</div>
+
+<div id="epub-generator-overlay">
+  <div id="epub-generator-overlay-inner">
+    <div id="epub-generator-overlay-icon">
+      <span class="fa fa-cog fa-spin"></span>
+    </div>
   </div>
 </div>

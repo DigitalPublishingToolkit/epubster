@@ -21,7 +21,7 @@ class UsersController extends AppController {
       if ($this->Auth->login()) {
         return $this->redirect($this->Auth->redirectUrl());
       } else {
-        $this->Session->setFlash(__('Username or password is incorrect'), 'custom_auth', array(), 'auth');
+        $this->Session->setFlash('<span class="fa fa-minus-circle"></span>'.__('Username or password is incorrect'), 'custom_auth', array(), 'auth');
       }
     }
   }
@@ -59,10 +59,10 @@ class UsersController extends AppController {
 			$this->User->create();
 			$this->request->data['User']['timestamp'] = date('Y-m-d H:i:s');
 			if ($this->User->save($this->request->data)) {
-				$this->Session->setFlash(__('The user has been saved'));
+				$this->Session->setFlash('<span class="fa fa-check-circle"></span>'.__('The user has been saved'));
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+				$this->Session->setFlash('<span class="fa fa-minus-circle"></span>'.__('The user could not be saved. Please, try again.'));
 			}
 		}
 	}
@@ -83,10 +83,10 @@ class UsersController extends AppController {
 		    unset($this->request->data['User']['password']);
 		  }
 			if ($this->User->save($this->request->data)) {
-				$this->Session->setFlash(__('The user has been saved'));
+				$this->Session->setFlash('<span class="fa fa-check-circle"></span>'.__('The user has been saved'));
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+				$this->Session->setFlash('<span class="fa fa-minus-circle"></span>'.__('The user could not be saved. Please, try again.'));
 			}
 		} else {
 			$options = array('conditions' => array('User.' . $this->User->primaryKey => $id));
@@ -109,11 +109,11 @@ class UsersController extends AppController {
 		$this->request->onlyAllow('post', 'delete');
 		if ($id != 1) {
   		if ($this->User->delete()) {
-  			$this->Session->setFlash(__('User deleted'));
+  			$this->Session->setFlash('<span class="fa fa-times-circle"></span>'.__('User deleted'));
   			$this->redirect(array('action' => 'index'));
   		}  		
 		}
-		$this->Session->setFlash(__('User was not deleted'));
+		$this->Session->setFlash('<span class="fa fa-minus-circle"></span>'.__('User was not deleted'));
 		$this->redirect(array('action' => 'index'));
 	}
 }

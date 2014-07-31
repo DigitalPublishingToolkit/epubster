@@ -1,0 +1,73 @@
+/*
+  Title: Default
+*/
+
+body {
+  font-family: "Droid Sans", "Helvetica Neue", "Helvetica", sans-serif;
+  font-size: 1em;
+  line-height: 1em;
+  color: #000;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1em;  
+}
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: 2.5em;
+}
+
+h3 {
+  font-size: 2em;
+}
+
+h4 {
+  font-size: 1.5em;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+h6 {
+  font-size: 1em;
+}
+
+blockquote {
+  font-style: italic;
+}
+
+.is-highlight, .is-person {
+  color: #000;
+  text-decoration: none;
+}
+
+.is-highlight, .is-person {
+  background: #f5efc2;
+  border-radius: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.is-person {
+  background: #d7f5c2;
+}
+
+/* Droid Sans */
+@font-face {
+  font-family: 'Droid Sans';
+  font-weight: normal;
+  font-style: normal;
+  src:url('DroidSans/DroidSans.ttf');
+}
+
+@font-face {
+  font-family: 'Droid Sans';
+  font-weight: bold;
+  font-style: normal;
+  src:url('DroidSans/DroidSans-Bold.ttf');
+}

@@ -1,4 +1,4 @@
-      <?php $anchor = Inflector::slug(strtolower($section['title']), ''); ?>
+      <?php $anchor = Inflector::slug(strtolower($section['title']), '-'); ?>
       <div class="tab-pane<?php echo ($count === 0) ? ' active': ''; ?>" id="section-<?php echo $anchor; ?>">
         <?php if (isset($section['id']) && !empty($section['id'])) : ?>
         <button rel="popover" id="tab-settings-<?php echo $section['id']; ?>" type="button" class="tab-settings btn btn-link btn-lg" data-container="body" data-toggle="popover" data-placement="bottom" data-original-title="<?php echo __('Section Options'); ?>" data-content='<?php echo $this->element('tab-settings', array('id' => $section['id'])); ?>'><i class="fa fa-gear"></i></button>

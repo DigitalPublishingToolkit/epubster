@@ -13,7 +13,7 @@
           $actions[] = array('action' => 'view/'.$id, 'label' => __('View this edition'), 'icon' => 'fa fa-eye', 'divider' => true);
         }
         if (($this->request->action === 'edit' || $this->request->action === 'view') && isset($id)) {
-          $actions[] = array('action' => 'generate/'.$id, 'label' => __('Generate EPUB'), 'icon' => 'fa fa-cogs');
+          $actions[] = array('action' => 'generate/'.$id, 'label' => __('Generate EPUB'), 'id' => 'generate-epub', 'icon' => 'fa fa-cogs');
         }
       break;
       case 'users':
@@ -36,7 +36,7 @@
      		<?php $active .= (isset($action['divider']) && $action['divider']) ? ' divider': ''; ?>
      		<?php $link = '<i class="'.$action['icon'].'"></i> '.$action['label']; ?>
      		<?php $link .= (isset($action['badge']) && !empty($action['badge'])) ? ' <span class="badge pull-right">'.$action['badge'].'</span>': ''; ?>
-    		<li class="<?php echo $active; ?>"><?php echo $this->Html->link($link, array('action' => $action['action']), array('escape' => false)); ?></li>
+    		<li class="<?php echo $active; ?>"<?php echo (isset($action['id'])) ? ' id="'.$action['id'].'"': ''; ?>><?php echo $this->Html->link($link, array('action' => $action['action']), array('escape' => false)); ?></li>
      		<?php endforeach; ?>
     	  <?php endif; ?>
     	</ul>

@@ -9,7 +9,6 @@ App::uses('File', 'Utility');
  * @property Section $Section
  */
 class Edition extends AppModel {
-
 /**
  * Display field
  *
@@ -17,6 +16,16 @@ class Edition extends AppModel {
  */
 	public $displayField = 'name';
 	public $actsAs = array('Containable');
+
+  public $references;
+  public $processedReferences;
+  public $firstUrl;
+  public $nextUrl;
+  public $url;
+  public $referenceCount = 0;
+  public $totalReferencesCount;
+  public $currentReferenceGroupCount;
+  public $indexType;
 
 /**
  * Validation rules
@@ -122,9 +131,111 @@ class Edition extends AppModel {
   public function sanitiseText($text=null) {
     if ($text) {
   		//Remove Microsoft Word quotes (http://stackoverflow.com/a/6610752/196750)
-  		$text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
+  		$text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
   		$text = preg_replace('/[^(\x20-\x7F)]*/','', $text);
   		return $text;      
+    }
+  }
+  
+  public function parseIndeces($match) {
+    $this->referenceCount += 1;
+    $match = strip_tags($match[1]);
+/*
+    if ($key = array_search($match, $this->processedReferences)) {
+      $count = count($this->references[$key]['url'])+1;
+      $this->references[$key]['url'][] = '<a href="'.$this->url.'">'.$count.'</a>';
+    } else {
+      $count = 1;
+      $this->references[] = array('reference' => $match, 'url' => array('<a href="'.$this->url.'">'.$count.'</a>'));
+      $this->processedReferences[] = $match;
+    }
+*/
+    if ($this->referenceCount === 1) {
+      $this->firstUrl = $this->url;
+    }
+    $url = $this->url;
+    $nextReference = $this->referenceCount+1;
+    
+    //This is the last reference, jump to the first one
+    if ($this->totalReferencesCount+1 === $nextReference) {
+      $nextReference = 1;
+      $url = $this->firstUrl;
+    }
+    
+    //This is the last reference in the current group, jump to the next page, if applicable  
+    if ($this->referenceCount === $this->currentReferenceGroupCount) {
+      if ($this->currentReferenceGroupCount === 1) {
+        $this->referenceCount = 1;
+        $nextReference = 1;
+      }
+      $url = $this->nextUrl;
+    }
+    
+    $refname = Inflector::slug($match, '-');
+    $refname = 'index-'.$refname;
+    return '<a id="'.$refname.'-'.$this->referenceCount.'" class="'.$this->indexType.'" href="'.$url.'#'.$refname.'-'.$nextReference.'">'.$match.'</a>';
+  }
+  
+  public function generateIndex($sections=null, $type='highlight') {
+    if ($sections) {
+      if ($type === 'person') {
+        $this->indexType = 'is-person';
+      } else {
+        $this->indexType = 'is-highlight';
+      }
+    
+      $this->references = array();
+      $this->processedReferences = array();
+      foreach ($sections as $position=>$section) {
+        $this->url = Inflector::slug($section['title'], '-').'.xhtml';
+        preg_match_all('(\<span class=\"'.$this->indexType.'\">(.*?)\<\/span\>)', $section['text'], $matches);
+        if (isset($matches[1]) && !empty($matches[1])) {
+          foreach ($matches[1] as $index=>$match) {
+            $match = strip_tags($match);
+            $key = array_search($match, $this->processedReferences);
+
+            if ($key !== false) {
+              $count = count($this->references[$key]['url'])+1;
+              $this->references[$key]['url'][] = '<a href="'.$this->url.'">'.$count.'</a>';
+              $this->references[$key]['position'][] = $position;
+            } else {
+              $count = 1;
+              $this->references[] = array('reference' => $match, 'position' => array($position), 'url' => array('<a href="'.$this->url.'">'.$count.'</a>'));
+              $this->processedReferences[] = $match;
+            }
+          }
+        }
+      }
+      $formattedReferences = array();
+      foreach ($this->references as $reference) {
+        if ($reference['position'] > 1) {
+          $this->referenceCount = 0;
+          $this->totalReferencesCount = 0;
+          $occurences = array_count_values($reference['position']);
+          $positions = array_unique($reference['position']);
+          foreach ($positions as $position) {
+            preg_match_all('(\<span class=\"'.$this->indexType.'\">('.$reference['reference'].')\<\/span\>)', $sections[$position]['text'], $matches);
+            if (!empty($matches[0])) {
+              $this->totalReferencesCount += count($matches[0]);
+            }
+          }
+          foreach ($positions as $count=>$position) {
+            $this->currentReferenceGroupCount = $occurences[$position];
+            $this->url = Inflector::slug($sections[$position]['title'], '-').'.xhtml';
+            if (count($sections) > $position+1) {
+              $this->nextUrl = Inflector::slug($sections[$position+1]['title'], '-').'.xhtml';
+            } else {
+              $this->nextUrl = Inflector::slug($sections[0]['title'], '-').'.xhtml';
+            }
+            $sections[$position]['text'] = preg_replace_callback('(\<span class=\"'.$this->indexType.'\">('.$reference['reference'].')\<\/span\>)', array($this, 'parseIndeces'), $sections[$position]['text']);
+          }          
+        }
+        $formattedReferences[] = '<li>'.$reference['reference'].' <small>('.implode(', ', $reference['url']).')</small></li>';
+      }
+      return array(
+        'references' => $formattedReferences,
+        'sections' => $sections
+      );
     }
   }
 }

@@ -44,6 +44,14 @@ h6 {
   margin-top: 1em;
 }
 
+a {
+  color: #000;
+}
+
+a:active {
+  color: #D13335;
+}
+
 section.section-text h1, section.section-text h2, section.section-text h3 {
   margin: 0 !important;
 }
@@ -84,9 +92,18 @@ blockquote {
   text-decoration: none;
 }
 
-.definition, .definition a, .has-highlight {
+.definition, .definition a, .is-highlight, is-person {
   color: #000;
   border-bottom: 2px solid #89D7A5;
+}
+
+.is-highlight, .is-person {
+  color: #000;
+  text-decoration: none;
+}
+
+.is-person {
+  border-bottom: 2px solid #D13335;
 }
 
 .note:hover, .note a:hover, .definition:hover, .definition a:hover, .note:active, .note a:active, .definition:active, .definition a:active {

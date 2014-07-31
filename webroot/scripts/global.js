@@ -169,7 +169,15 @@ function sectionSort() {
   });
 }
 
-function generateEPUB(id) {
+function generateEdition() {
+  $('#generate-epub').on('click', function(event) {
+    var id = $('#EditionId').val();
+    generateEPUB(id, true)
+    event.preventDefault();
+  });
+}
+
+function generateEPUB(id, download) {
   $.ajax({
     url: SITE_URL+"editions/generate/"+id,
     beforeSend : function() {
@@ -191,15 +199,28 @@ function generateEPUB(id) {
         top: 'auto', // Top position relative to parent in px
         left: 'auto' // Left position relative to parent in px
       };
-      var target = document.getElementById('epub-container');
-      var spinner = new Spinner(opts).spin(target);
+      if (download) {
+        $('#epub-generator-overlay').fadeIn('fast');
+        $('body, html').css('overflow', 'hidden');
+      } else {
+        var spinner = new Spinner(opts).spin(target);      
+        var target = document.getElementById('epub-container');
+      }
     },
     success : function(response) {
       if (response) {
-        $('#epub-container').fadeOut('fast', function() {
+        if (download) {
           epub = response+'.epub';
-          $(this).html('').append('<iframe id="page-epub" src="'+SITE_URL+'/assets/epub-js/epub-js.html"></iframe>').fadeIn('fast');
-        });        
+          window.location.replace(epub);
+          $('#epub-generator-overlay').fadeOut('fast', function() {
+            $('body, html').css('overflow', 'auto');
+          });
+        } else {
+          $('#epub-container').fadeOut('fast', function() {
+            epub = response+'.epub';
+            $(this).html('').append('<iframe id="page-epub" src="'+SITE_URL+'/assets/epub-js/epub-js.html"></iframe>').fadeIn('fast');
+          });          
+        }
       }
     }
   });
@@ -208,6 +229,36 @@ function generateEPUB(id) {
 function cleanFootnote(footnote) {
   if (footnote !== undefined) {
     return footnote.replace(/\[\^](.*?)\]/, function(str, value) { return value; }); 
+  }
+}
+
+/* Mark persons */
+function Person() {
+  rangy.init();
+
+  this.button = document.createElement('button');
+  this.button.className = 'medium-editor-action';
+  this.button.innerHTML = '<i class="fa fa-user"></i>';
+  this.button.onclick = this.onClick.bind(this);
+  
+  this.classApplier = rangy.createCssClassApplier("is-person", {
+    elementTagName: 'span',
+    normalize: true
+  });
+}
+
+Person.prototype.onClick = function(node) {
+  this.classApplier.toggleSelection();
+}
+
+Person.prototype.getButton = function() {
+  return this.button;
+}
+
+Person.prototype.checkState = function (node) {
+  var node = $(node);
+  if (node.hasClass('is-person')) {
+    this.button.classList.add('medium-editor-button-active');
   }
 }
 
@@ -220,7 +271,7 @@ function Index() {
   this.button.innerHTML = '<i class="fa fa-thumb-tack"></i>';
   this.button.onclick = this.onClick.bind(this);
   
-  this.classApplier = rangy.createCssClassApplier("has-highlight", {
+  this.classApplier = rangy.createCssClassApplier("is-highlight", {
     elementTagName: 'span',
     normalize: true
   });
@@ -236,7 +287,7 @@ Index.prototype.getButton = function() {
 
 Index.prototype.checkState = function (node) {
   var node = $(node);
-  if (node.hasClass('has-highlight')) {
+  if (node.hasClass('is-highlight')) {
     this.button.classList.add('medium-editor-button-active');
   }
 }
@@ -378,13 +429,14 @@ function restoreSelection(savedSel) {
 
 function setupMediumEditor() {
   editor = new MediumEditor('.html-editor', {
-    buttons: ['bold', 'italic', 'quote', 'link', 'anchor', 'orderedlist', 'unorderedlist', 'header1', 'header2', 'note', 'index'],
+    buttons: ['bold', 'italic', 'quote', 'link', 'anchor', 'orderedlist', 'unorderedlist', 'header1', 'header2', 'note', 'index', 'person'],
     buttonLabels : 'fontawesome',
     forcePlainText: true,
     placeholder : 'Start writing the content of this section...',
     extensions: {
       'note': new Notes(),
-      'index': new Index()
+      'index': new Index(),
+      'person': new Person()
     }
   });
 }
@@ -436,6 +488,7 @@ $(document).ready(function() {
   sectionTabs();
   sectionSort();
   previewFootnote();
+  generateEdition();
   
   $('body').popover({
     selector: '[rel="popover"]',

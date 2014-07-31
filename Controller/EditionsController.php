@@ -202,6 +202,28 @@ class EditionsController extends AppController {
       $edition['Section'][$index]['text'] = $this->Edition->sanitiseText($edition['Section'][$index]['text']);
   		$edition['Section'][$index]['text'] = $this->Markdown->transform($section['text']);		
 		}
+		$index = '';
+	  if ($edition['Edition']['index']) {
+  		$index = $this->Edition->generateIndex($edition['Section'], 'highlight');
+  		$edition['Section'] = $index['sections'];
+  		$index = $index['references'];
+  		if (!empty($index)) {
+    		$edition['Section'][] = array(
+    		  'title' => "Index",
+          'text' => "<h3>Index</h3>\n<ul>\n".implode("\n", $index).'</ul>'
+    		);    		
+  		}
+
+  		$index = $this->Edition->generateIndex($edition['Section'], 'person');
+  		$edition['Section'] = $index['sections'];
+  		$index = $index['references'];
+  		if (!empty($index)) {
+    		$edition['Section'][] = array(
+    		  'title' => "Personalia",
+          'text' => "<h3>Personalia</h3>\n<ul>\n".implode("\n", $index).'</ul>'
+    		);
+  		}
+	  }
  		$cssFile = EPUB_STYLES.$edition['Edition']['style'];
  		
     if ($this->request->is('ajax')) {
@@ -270,11 +292,11 @@ class EditionsController extends AppController {
 			  );
 			  $this->Edition->Section->create();
 			  if ($this->Edition->Section->saveAll($sections)) {			  
-  				$this->Session->setFlash(__('The edition has been saved'), 'default', array('class' => 'alert alert-success'));
+  				$this->Session->setFlash('<span class="fa fa-check-circle"></span>'.__('The edition has been saved'), 'default', array('class' => 'alert alert-success'));
   				$this->redirect(array('action' => 'edit', $id));  			  
 			  }
 			} else {
-				$this->Session->setFlash(__('The edition could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-error'));
+				$this->Session->setFlash('<span class="fa fa-minus-circle"></span>'.__('The edition could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-error'));
 			}
 		}
     $styles = $this->Edition->getStyles();
@@ -305,13 +327,13 @@ class EditionsController extends AppController {
 			if ($this->Edition->save($this->request->data)) {
 		    $sections = $this->Edition->saveNewSections($id, $this->request->data['Section']);
 			  if ($this->Edition->Section->saveMany($sections)) {
-  				$this->Session->setFlash(__('The edition has been saved'), 'default', array('class' => 'alert alert-success'));
+  				$this->Session->setFlash('<span class="fa fa-check-circle"></span> '.__('The edition has been saved'), 'default', array('class' => 'alert alert-success'));
   				$this->redirect(array('action' => 'edit', $id));
 				} else {
-  				$this->Session->setFlash(__('The sections of this edition could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-error'));  				
+  				$this->Session->setFlash('<span class="fa fa-exclamation-circle"></span>'.__('The sections of this edition could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-error'));  				
 				}
 			} else {
-				$this->Session->setFlash(__('The edition could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-error'));
+				$this->Session->setFlash('<span class="fa fa-minus-circle"></span>'.__('The edition could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-error'));
 			}
 		} else {
 			$options = array('conditions' => array('Edition.' . $this->Edition->primaryKey => $id));
@@ -327,11 +349,12 @@ class EditionsController extends AppController {
     $styles = $this->Edition->getStyles();
     $this->set('styles', $styles);    
     $this->set('id', $id);
-    $chapters = Set::combine($sections, '{n}.title', '{n}.title');
-    foreach ($chapters as $key=>$chapter) {
-      $slug = strtolower(Inflector::slug($key, '-'));
-      $chapters[$slug] = $chapter; 
-      unset($chapters[$key]);
+    //$chapters = Set::combine($sections, '{n}.title', '{n}.title');
+    $chapters = array();
+    foreach ($sections as $section) {
+      $slug = strtolower(Inflector::slug($section['title'], '-'));
+      $chapters[$slug] = $section['title']; 
+      //unset($chapters[$key]);
     }
     $this->set('chapters', $chapters);
 		$this->set(compact('sections'));
@@ -357,10 +380,10 @@ class EditionsController extends AppController {
 		}
 		
 		if ($this->Edition->delete()) {
-			$this->Session->setFlash(__('Edition deleted'), 'default', array('class' => 'alert alert-success'));
+			$this->Session->setFlash('<span class="fa fa-times-circle"></span>'.__('Edition deleted'), 'default', array('class' => 'alert alert-success'));
 			$this->redirect(array('action' => 'index'));
 		}
-		$this->Session->setFlash(__('Edition was not deleted'), 'default', array('class' => 'alert alert-error'));
+		$this->Session->setFlash('<span class="fa fa-minus-circle"></span>'.__('Edition was not deleted'), 'default', array('class' => 'alert alert-error'));
 		$this->redirect(array('action' => 'index'));
 	}
 }

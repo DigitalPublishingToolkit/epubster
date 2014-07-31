@@ -155,11 +155,15 @@ textarea {
 #main .html-editor img {
   max-width: 100%;
 }
-#main .html-editor .has-highlight {
+#main .html-editor .is-highlight,
+#main .html-editor .is-person {
   background: #f5efc2;
   border-radius: 4px;
   padding-left: 4px;
   padding-right: 4px;
+}
+#main .html-editor .is-person {
+  background: #d7f5c2;
 }
 #main .html-editor .inline-footnote-content {
   width: 0px;
@@ -580,4 +584,31 @@ textarea {
 .medium-editor-toolbar-footnote-preview-inner {
   padding: 10px;
   display: block;
+}
+#epub-generator-overlay {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.85);
+}
+#epub-generator-overlay #epub-generator-overlay {
+  position: relative;
+}
+#epub-generator-overlay #epub-generator-overlay-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -25px;
+  margin-left: -25px;
+  width: 100px;
+  height: 100px;
+}
+#epub-generator-overlay #epub-generator-overlay-icon span.fa-cog {
+  font-size: 100px;
+  line-height: 100px;
+  color: #fff;
 }

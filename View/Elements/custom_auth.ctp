@@ -1,3 +1,1 @@
-<div class="alert alert-warning">
-  <i class="fa fa-exclamation-triangle"></i> <?php echo $message; ?>
-</div>
+<div class="alert alert-warning"><?php echo $message; ?></div>
