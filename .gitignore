@@ -4,7 +4,6 @@ tmp/
 [Cc]onfig/bootstrap.php
 !empty
 *.epub
-webroot/index.php
 webroot/files/tmp/
 webroot/files/uploads/
 
