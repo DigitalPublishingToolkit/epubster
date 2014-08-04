@@ -6,7 +6,7 @@ EPUBster is a web application to create and edit EPUBs, written in CakePHP. Cont
 ##Prerequisites
 This application uses the open-source development framework [CakePHP](http://cakephp.org) and a MySQL database. Application structure (Controllers, Models, Views, etc.) should be placed in the app directory of a fresh copy of Cake.
 
-Remove the `RewriteBase` in the `.htaccess` file and set the `CAKE_CORE_INCLUDE_PATH` in /`webroot/index.php` to the Cake default path. Change the `SITE_URL` in `/Config/bootstrap.php so it matches the path on your webserver.
+Rename `Config/database.php.default` to `Config/database.php` and fill in the necessary credentials. Change the `SITE_URL` in `/Config/bootstrap.php so it matches the path on your webserver.
 
 ##Libraries
 The application makes heavy use of the following PHP libraries:
