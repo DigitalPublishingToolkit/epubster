@@ -36,7 +36,7 @@ function slugify(slug) {
   return slug
         .toLowerCase()
         .replace(/.xhtml/,'')        
-        .replace(/[^\w ]+/g,'')
+        .replace(/[^\w ]+/g,'-')
         .replace(/ +/g,'-');
 }
 

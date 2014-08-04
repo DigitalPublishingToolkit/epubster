@@ -52,6 +52,11 @@ a:active {
   color: #D13335;
 }
 
+img {
+  max-width: 100%;
+  page-break-inside: avoid;
+}
+
 section.section-text h1, section.section-text h2, section.section-text h3 {
   margin: 0 !important;
 }

@@ -3,12 +3,12 @@
  * ePub OPF file structure
  *
  * @author A. Grandt <php@grandt.com>
- * @copyright 2009-2014 A. Grandt
+ * @copyright 2009-2013 A. Grandt
  * @license GNU LGPL, Attribution required for commercial implementations, requested for everything else.
- * @version 3.20
+ * @version 3.00
  */
 class Opf {
-    const _VERSION = 3.20;
+    const _VERSION = 3.00;
 
     /* Core Media types.
      * These types are the only guaranteed mime types any ePub reader must understand.
@@ -28,7 +28,7 @@ class Opf {
 
     private $bookVersion = EPub::BOOK_VERSION_EPUB2;
 	private $ident = "BookId";
-
+    
     public $date = NULL;
     public $metadata = NULL;
     public $manifest = NULL;
@@ -55,14 +55,14 @@ class Opf {
      * @return void
      */
     function __destruct() {
-        unset ($this->bookVersion, $this->ident, $this->date, $this->metadata, $this->manifest, $this->spine, $this->guide);
+        unset ($this->ident, $this->metadata, $this->manifest, $this->spine, $this->guide);
     }
 
     /**
      *
      * Enter description here ...
      *
-     * @param string $ident
+     * @param unknown_type $ident
      */
     function setVersion($bookVersion) {
         $this->bookVersion = is_string($bookVersion) ? trim($bookVersion) : EPub::BOOK_VERSION_EPUB2;
@@ -71,12 +71,12 @@ class Opf {
 	function isEPubVersion2() {
 		return $this->bookVersion === EPub::BOOK_VERSION_EPUB2;
 	}
-
+	
     /**
      *
      * Enter description here ...
      *
-     * @param string $ident
+     * @param unknown_type $ident
      */
     function setIdent($ident = "BookId") {
         $this->ident = is_string($ident) ? trim($ident) : "BookId";
@@ -91,7 +91,7 @@ class Opf {
     function finalize() {
         $opf = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 				. "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"" . $this->ident . "\" version=\"" . $this->bookVersion . "\">\n";
-
+	
 		$opf .= $this->metadata->finalize($this->bookVersion, $this->date);
         $opf .= $this->manifest->finalize($this->bookVersion);
         $opf .= $this->spine->finalize();
@@ -109,10 +109,10 @@ class Opf {
      *
      * Enter description here ...
      *
-     * @param string $title
-     * @param string $language
-     * @param string $identifier
-     * @param string $identifierScheme
+     * @param unknown_type $title
+     * @param unknown_type $language
+     * @param unknown_type $identifier
+     * @param unknown_type $identifierScheme
      */
     function initialize($title, $language, $identifier, $identifierScheme) {
         $this->metadata->addDublinCore(new DublinCore("title", $title));
@@ -128,9 +128,9 @@ class Opf {
      *
      * Enter description here ...
      *
-     * @param string $id
-     * @param string $href
-     * @param string $mediaType
+     * @param unknown_type $id
+     * @param unknown_type $href
+     * @param unknown_type $mediaType
      */
     function addItem($id, $href, $mediaType, $properties = NULL) {
         $this->manifest->addItem(new Item($id, $href, $mediaType, $properties));
@@ -140,8 +140,8 @@ class Opf {
      *
      * Enter description here ...
      *
-     * @param string $idref
-     * @param bool   $linear
+     * @param unknown_type $idref
+     * @param unknown_type $linear
      */
     function addItemRef($idref, $linear = TRUE) {
         $this->spine->addItemref(new Itemref($idref, $linear));
@@ -151,9 +151,9 @@ class Opf {
      *
      * Enter description here ...
      *
-     * @param string $type
-     * @param string $title
-     * @param string $href
+     * @param unknown_type $type
+     * @param unknown_type $title
+     * @param unknown_type $href
      */
     function addReference($type, $title, $href) {
         $this->guide->addReference(new Reference($type, $title, $href));
@@ -163,8 +163,8 @@ class Opf {
      *
      * Enter description here ...
      *
-     * @param string $name
-     * @param string $value
+     * @param unknown_type $name
+     * @param unknown_type $value
      */
     function addDCMeta($name, $value) {
         $this->metadata->addDublinCore(new DublinCore($name, $value));
@@ -174,8 +174,8 @@ class Opf {
      *
      * Enter description here ...
      *
-     * @param string $name
-     * @param string $content
+     * @param unknown_type $name
+     * @param unknown_type $content
      */
     function addMeta($name, $content) {
         $this->metadata->addMeta($name, $content);
@@ -185,9 +185,9 @@ class Opf {
      *
      * Enter description here ...
      *
-     * @param string $name
-     * @param string $fileAs
-     * @param string $role Use the MarcCode constants
+     * @param unknown_type $name
+     * @param unknown_type $fileAs
+     * @param unknown_type $role Use the MarcCode constants
      */
     function addCreator($name, $fileAs = NULL, $role = NULL) {
         $dc = new DublinCore(DublinCore::CREATOR, trim($name));
@@ -200,16 +200,16 @@ class Opf {
             $dc->addOpfAttr("role", trim($role));
         }
 
-        $this->metadata->addDublinCore($dc);
+        $this->dc[] = $dc;
     }
 
     /**
      *
      * Enter description here ...
      *
-     * @param string $name
-     * @param string $fileAs
-     * @param string $role Use the MarcCode constants
+     * @param unknown_type $name
+     * @param unknown_type $fileAs
+     * @param unknown_type $role Use the MarcCode constants
      */
     function addColaborator($name, $fileAs = NULL, $role = NULL) {
         $dc = new DublinCore(DublinCore::CONTRIBUTOR, trim($name));
@@ -222,7 +222,7 @@ class Opf {
             $dc->addOpfAttr("role", trim($role));
         }
 
-        $this->metadata->addDublinCore($dc);
+        $this->dc[] = $dc;
     }
 }
 
@@ -256,7 +256,7 @@ class Metadata {
      *
      * Enter description here ...
      *
-     * @param DublinCore $dc
+     * @param unknown_type $dc
      */
     function addDublinCore($dc) {
         if ($dc != NULL && is_object($dc) && get_class($dc) === "DublinCore") {
@@ -268,8 +268,8 @@ class Metadata {
      *
      * Enter description here ...
      *
-     * @param string $name
-     * @param string $content
+     * @param unknown_type $name
+     * @param unknown_type $content
      */
     function addMeta($name, $content) {
         $name = is_string($name) ? trim($name) : NULL;
@@ -281,12 +281,12 @@ class Metadata {
         }
     }
 
-	/**
-	 *
-	 * @param string $bookVersion
-	 * @param int    $date
-	 * @return string
-	 */
+    /**
+     *
+     * Enter description here ...
+     *
+     * @return string
+     */
     function finalize($bookVersion = EPub::BOOK_VERSION_EPUB2, $date = NULL) {
         $metadata = "\t<metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n";
 		if ($bookVersion === EPub::BOOK_VERSION_EPUB2) {
@@ -302,7 +302,7 @@ class Metadata {
         foreach ($this->dc as $dc) {
             $metadata .= $dc->finalize($bookVersion);
         }
-
+			
         foreach ($this->meta as $data) {
             list($name, $content) = each($data);
             $metadata .= "\t\t<meta name=\"" . $name . "\" content=\"" . $content . "\" />\n";
@@ -361,8 +361,8 @@ class DublinCore {
      *
      * Enter description here ...
      *
-     * @param string $name
-     * @param string $value
+     * @param unknown_type $name
+     * @param unknown_type $value
      */
     function setDc($name, $value) {
         $this->dcName = is_string($name) ? trim($name) : NULL;
@@ -378,8 +378,8 @@ class DublinCore {
      *
      * Enter description here ...
      *
-     * @param string $attrName
-     * @param string $attrValue
+     * @param unknown_type $attrName
+     * @param unknown_type $attrValue
      */
     function addAttr($attrName, $attrValue) {
         $attrName = is_string($attrName) ? trim($attrName) : NULL;
@@ -395,8 +395,8 @@ class DublinCore {
      *
      * Enter description here ...
      *
-     * @param string $opfAttrName
-     * @param string $opfAttrValue
+     * @param unknown_type $opfAttrName
+     * @param unknown_type $opfAttrValue
      */
     function addOpfAttr($opfAttrName, $opfAttrValue) {
         $opfAttrName = is_string($opfAttrName) ? trim($opfAttrName) : NULL;
@@ -408,12 +408,12 @@ class DublinCore {
         }
     }
 
-
-	/**
-	 *
-	 * @param string $bookVersion
-	 * @return string
-	 */
+    /**
+     *
+     * Enter description here ...
+     *
+     * @return string
+     */
     function finalize($bookVersion = EPub::BOOK_VERSION_EPUB2) {
         $dc = "\t\t<dc:" . $this->dcName;
 
@@ -462,7 +462,7 @@ class Manifest {
      *
      * Enter description here ...
      *
-     * @param Item $item
+     * @param unknown_type $item
      */
     function addItem($item) {
         if ($item != NULL && is_object($item) && get_class($item) === "Item") {
@@ -470,12 +470,13 @@ class Manifest {
         }
     }
 
-	/**
-	 *
-	 * @param string $bookVersion
-	 * @return string
-	 */
-	function finalize($bookVersion = EPub::BOOK_VERSION_EPUB2) {
+    /**
+     *
+     * Enter description here ...
+     *
+     * @return string
+     */
+    function finalize($bookVersion = EPub::BOOK_VERSION_EPUB2) {
         $manifest = "\n\t<manifest>\n";
         foreach ($this->items as $item) {
             $manifest .= $item->finalize($bookVersion);
@@ -518,14 +519,14 @@ class Item {
      */
     function __destruct() {
         unset ($this->id, $this->href, $this->mediaType);
-        unset ($this->properties, $this->requiredNamespace, $this->requiredModules, $this->fallback, $this->fallbackStyle);
+        unset ($this->requiredNamespace, $this->requiredModules, $this->fallback, $this->fallbackStyle);
     }
 
     /**
      *
      * Enter description here ...
      *
-     * @param string $id
+     * @param unknown_type $id
      */
     function setId($id) {
         $this->id = is_string($id) ? trim($id) : NULL;
@@ -535,7 +536,7 @@ class Item {
      *
      * Enter description here ...
      *
-     * @param string $href
+     * @param unknown_type $href
      */
     function setHref($href) {
         $this->href = is_string($href) ? trim($href) : NULL;
@@ -545,7 +546,7 @@ class Item {
      *
      * Enter description here ...
      *
-     * @param string $mediaType
+     * @param unknown_type $mediaType
      */
     function setMediaType($mediaType) {
         $this->mediaType = is_string($mediaType) ? trim($mediaType) : NULL;
@@ -555,7 +556,7 @@ class Item {
      *
      * Enter description here ...
      *
-     * @param string $properties
+     * @param unknown_type $properties
      */
     function setProperties($properties) {
         $this->properties = is_string($properties) ? trim($properties) : NULL;
@@ -565,7 +566,7 @@ class Item {
      *
      * Enter description here ...
      *
-     * @param string $requiredNamespace
+     * @param unknown_type $requiredNamespace
      */
     function setRequiredNamespace($requiredNamespace) {
         $this->requiredNamespace = is_string($requiredNamespace) ? trim($requiredNamespace) : NULL;
@@ -575,7 +576,7 @@ class Item {
      *
      * Enter description here ...
      *
-     * @param string $requiredModules
+     * @param unknown_type $requiredModules
      */
     function setRequiredModules($requiredModules) {
         $this->requiredModules = is_string($requiredModules) ? trim($requiredModules) : NULL;
@@ -585,7 +586,7 @@ class Item {
      *
      * Enter description here ...
      *
-     * @param string $fallback
+     * @param unknown_type $fallback
      */
     function setfallback($fallback) {
         $this->fallback = is_string($fallback) ? trim($fallback) : NULL;
@@ -595,17 +596,18 @@ class Item {
      *
      * Enter description here ...
      *
-     * @param string $fallbackStyle
+     * @param unknown_type $fallbackStyle
      */
     function setFallbackStyle($fallbackStyle) {
         $this->fallbackStyle = is_string($fallbackStyle) ? trim($fallbackStyle) : NULL;
     }
 
-	/**
-	 *
-	 * @param string $bookVersion
-	 * @return string
-	 */
+    /**
+     *
+     * Enter description here ...
+     *
+     * @return string
+     */
     function finalize($bookVersion = EPub::BOOK_VERSION_EPUB2) {
         $item = "\t\t<item id=\"" . $this->id . "\" href=\"" . $this->href . "\" media-type=\"" . $this->mediaType . "\" ";
 		if ($bookVersion === EPub::BOOK_VERSION_EPUB3 && isset($this->properties)) {
@@ -658,7 +660,7 @@ class Spine {
      *
      * Enter description here ...
      *
-     * @param string $toc
+     * @param unknown_type $toc
      */
     function setToc($toc) {
         $this->toc = is_string($toc) ? trim($toc) : NULL;
@@ -668,14 +670,11 @@ class Spine {
      *
      * Enter description here ...
      *
-     * @param Itemref $itemref
+     * @param unknown_type $itemref
      */
     function addItemref($itemref) {
-        if ($itemref != NULL 
-				&& is_object($itemref) 
-				&& get_class($itemref) === "Itemref" 
-				&& !isset($this->itemrefs[$itemref->getIdref()])) {
-            $this->itemrefs[$itemref->getIdref()] = $itemref;
+        if ($itemref != NULL && is_object($itemref) && get_class($itemref) === "Itemref") {
+            $this->itemrefs[] = $itemref;
         }
     }
 
@@ -726,27 +725,17 @@ class Itemref {
      *
      * Enter description here ...
      *
-     * @param string $idref
+     * @param unknown_type $idref
      */
     function setIdref($idref) {
         $this->idref = is_string($idref) ? trim($idref) : NULL;
-    }
-
-	/**
-     *
-     * Enter description here ...
-     *
-     * @return string $idref
-     */
-    function getIdref() {
-        return $this->idref;
     }
 
     /**
      *
      * Enter description here ...
      *
-     * @param bool $linear
+     * @param unknown_type $linear
      */
     function setLinear($linear = TRUE) {
         $this->linear = $linear === TRUE;
@@ -805,7 +794,7 @@ class Guide {
      *
      * Enter description here ...
      *
-     * @param Reference $reference
+     * @param unknown_type $reference
      */
     function addReference($reference) {
         if ($reference != NULL && is_object($reference) && get_class($reference) === "Reference") {
@@ -884,7 +873,7 @@ class Reference {
     const TABLE_OF_CONTENTS = "toc";
 
     /** Page with possibly title, author, publisher, and other metadata */
-    const TITLE_PAGE = "titlepage";
+    const TITLE_PAGE = "title-page";
 
     /** First page of the book, ie. first page of the first chapter */
     const TEXT = "text";
@@ -894,7 +883,7 @@ class Reference {
 	// ******************
 
 	// Document partitions
-	/** The publications cover(s), jacket information, etc. This is officially in ePub3, but works for ePub 2 as well */
+	/** The publications cover(s), jacket information, etc. */
 	const COVER = "cover";
 
 	/** Preliminary material to the content body, such as tables of contents, dedications, etc. */
@@ -907,17 +896,17 @@ class Reference {
 	const BACKMATTER = "backmatter";
 
 
-	private $type = NULL;
+	
+	
+    private $type = NULL;
     private $title = NULL;
     private $href = NULL;
 
     /**
      * Class constructor.
-	 *
-	 * @param string $type
-	 * @param string $title
-	 * @param string $href
-	 */
+     *
+     * @return void
+     */
     function __construct($type, $title, $href) {
         $this->setType($type);
         $this->setTitle($title);
@@ -937,7 +926,7 @@ class Reference {
      *
      * Enter description here ...
      *
-     * @param string $type
+     * @param unknown_type $type
      */
     function setType($type) {
         $this->type = is_string($type) ? trim($type) : NULL;
@@ -947,7 +936,7 @@ class Reference {
      *
      * Enter description here ...
      *
-     * @param string $title
+     * @param unknown_type $title
      */
     function setTitle($title) {
         $this->title = is_string($title) ? trim($title) : NULL;
@@ -957,7 +946,7 @@ class Reference {
      *
      * Enter description here ...
      *
-     * @param string $href
+     * @param unknown_type $href
      */
     function setHref($href) {
         $this->href = is_string($href) ? trim($href) : NULL;

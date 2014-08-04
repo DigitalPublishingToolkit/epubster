@@ -171,12 +171,21 @@ class Edition extends AppModel {
       $url = $this->nextUrl;
     }
     
+    //There is only one reference
+    if ($this->totalReferencesCount === 1) {
+      if ($this->indexType === 'is-person') {
+        $url = 'Personalia.xhtml'; 
+      } else {
+        $url = 'Index.xhtml'; 
+      }
+    }
+    
     $refname = Inflector::slug($match, '-');
     $refname = 'index-'.$refname;
     return '<a id="'.$refname.'-'.$this->referenceCount.'" class="'.$this->indexType.'" href="'.$url.'#'.$refname.'-'.$nextReference.'">'.$match.'</a>';
   }
   
-  public function generateIndex($sections=null, $type='highlight') {
+  public function generateIndex($sections=null, $type='highlight') {  
     if ($sections) {
       if ($type === 'person') {
         $this->indexType = 'is-person';
