@@ -54,7 +54,7 @@ function addMarkdownSyntax(file) {
 
 function addHTMLSyntax(file) {
   if (file !== undefined) {
-    return '<img src="'+UPLOAD_URL+file.name+'" alt="'+file.caption+'">';
+    return '<figure><img src="'+UPLOAD_URL+file.name+'" alt="'+file.caption+'"></figure>';
   }
 }
 

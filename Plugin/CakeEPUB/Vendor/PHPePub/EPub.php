@@ -236,6 +236,15 @@ class EPub {
 		}
 
         $this->zip->addFile($this->content, "META-INF/container.xml", 0, NULL, FALSE);
+        
+        //Support custom fonts in iBooks
+        $this->zip->addFile('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <display_options>
+          <platform name="*">
+          <option name="specified-fonts">true</option>
+          </platform>
+          </display_options>', 'META-INF/com.apple.ibooks.display-options.xml', 0, NULL, FALSE);
+          
         $this->content = NULL;
         $this->ncx = new Ncx(NULL, NULL, NULL, $this->languageCode, $this->writingDirection);
         $this->opf = new Opf();

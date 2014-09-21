@@ -45,15 +45,28 @@ function sectionTabs() {
   if (currentTab) {
     $('#edition-tabs a[href="'+currentTab+'"]').tab('show');
   }
+  
+  var currentSectionTab = $.jStorage.get("selected-section-tab");
+  if (currentSectionTab) {
+    $('#section-tabs a[href="'+currentSectionTab+'"]').tab('show');
+  }
+
   $(document).on('click', '#edition-tabs a, #section-tabs a[id!="add-new-section"]', function (event) {
+    var parent = $(this).parents('ul');
     $('.tab-settings').popover('destroy');
     event.preventDefault();
     $(this).tab('show');
-    $.jStorage.set("selected-tab", $(this).attr('href'));
     
-    editor.deactivate();
+    if (parent.attr('id') === 'section-tabs') {
+      $.jStorage.set("selected-section-tab", $(this).attr('href'));      
+    } else {
+      $.jStorage.set("selected-tab", $(this).attr('href'));
+    }
+    
+    if (editor) {
+      editor.deactivate(); 
+    }
     setupMediumEditor();
-
   });
 
   $('#section-tabs a#add-new-section').on('click', function (event) {
@@ -307,9 +320,9 @@ function Notes() {
 
 Notes.prototype.onClick = function(node) {
   if ($('.medium-editor-toolbar-form-note').length === 0) {
-    $(".medium-editor-toolbar").append('<div class="medium-editor-toolbar-form-note"><input type="text" placeholder="Add note..." /><a href="#">×</a></div>'); 
-    if ($('.medium-editor-toolbar-form-note input').val() == '' && footnoteValue !== '') {
-      $('.medium-editor-toolbar-form-note input').val(footnoteValue); 
+    $(".medium-editor-toolbar").append('<div class="medium-editor-toolbar-form-note"><div class="medium-editor-toolbar-form-note-input" contenteditable=true></div><textarea class="hidden"></textarea><a class="toolbar-close" href="#">×</a> <a class="toolbar-done" href="#"><span class="fa fa-check"></span></a></div>'); 
+    if ($('.medium-editor-toolbar-form-note-input').html() == '' && footnoteValue !== '') {
+      $('.medium-editor-toolbar-form-note-input').html(footnoteValue); 
     }
   }
 
@@ -318,29 +331,32 @@ Notes.prototype.onClick = function(node) {
   editor.toolbarActions.style.display = 'none';
   $('.medium-editor-toolbar-form-note').show();
   editor.keepToolbarAlive = true;
-  $('.medium-editor-toolbar-form-note input').focus();
+  $('.medium-editor-toolbar-form-note-input').focus();
   
   $('.medium-editor-toolbar-form-note a').on('click', function (event) {
-    event.preventDefault();
-    editor.showToolbarActions();
-    $('.medium-editor-toolbar-form-note').hide();
-    $('.medium-editor-toolbar-form-note input').val('');
-    
-    restoreSelection(savedSelection);    
-    var footnote = document.getSelection().anchorNode.parentNode;
-    if ($(footnote).hasClass('has-footnote')) {
-      var text = document.getSelection().anchorNode.nodeValue;
-      footnote.remove();
-      document.execCommand("insertText", false, text);
+    if (!$(this).hasClass('toolbar-done')) {
+      event.preventDefault();
+      editor.showToolbarActions();
+      $('.medium-editor-toolbar-form-note').hide();
+      $('.medium-editor-toolbar-form-note-input').html('');
+      
+      restoreSelection(savedSelection);    
+      var footnote = document.getSelection().anchorNode.parentNode;
+      if ($(footnote).hasClass('has-footnote')) {
+        var text = document.getSelection().anchorNode.nodeValue;
+        footnote.remove();
+        document.execCommand("insertText", false, text);
+      }      
     }
   });
 
-  $('.medium-editor-toolbar-form-note input').on('keyup', function (event) {
-    if (event.keyCode === 13) {
+  $('.medium-editor-toolbar-form-note a.toolbar-done').on('click', function (event) {
+      var note = $('.medium-editor-toolbar-form-note-input').html();
+      $('.medium-editor-toolbar-form-note-input textarea').html(note);
       event.preventDefault();
       $(footnote).remove();
       restoreSelection(savedSelection);
-      var value = $(this).val();
+      var value = note;
       if (value) {
         insertHTMLAtCursor('<span class="has-footnote">'+document.getSelection()+'<span class="inline-footnote-content">[^] '+value+']</span></span>', false);
         
@@ -353,8 +369,7 @@ Notes.prototype.onClick = function(node) {
       }
       editor.hideToolbarActions();
       $('.medium-editor-toolbar-form-note').hide();
-      $('.medium-editor-toolbar-form-note input').val('');
-    }
+      $('.medium-editor-toolbar-form-note-input').html('');
   });
 }
 
@@ -368,9 +383,9 @@ Notes.prototype.checkState = function (node) {
     if (footnote === undefined || footnote === null || footnote === '') {
       footnote = $('.inline-footnote-content', node); 
     }
-    footnoteValue = $('.inline-footnote-content', node).first().text();
+    footnoteValue = $('.inline-footnote-content', node).first().html();
     footnoteValue = cleanFootnote(footnoteValue);
-    $('.medium-editor-toolbar-form-note input').val(footnoteValue);
+    $('.medium-editor-toolbar-form-note-input').html(footnoteValue);
 
     this.button.classList.add('medium-editor-button-active');
   }
@@ -379,7 +394,7 @@ Notes.prototype.checkState = function (node) {
 function previewFootnote() {
   $( document ).on("mouseenter mouseleave", '.has-footnote', function(event) {
     var preview = $('#medium-editor-footnote-preview-container');
-    var footnote = cleanFootnote($('.inline-footnote-content', this).text());
+    var footnote = cleanFootnote($('.inline-footnote-content', this).html());
 
     if (event.type === 'mouseenter') {
       preview.addClass('medium-editor-anchor-preview-active');
@@ -431,7 +446,7 @@ function setupMediumEditor() {
   editor = new MediumEditor('.html-editor', {
     buttons: ['bold', 'italic', 'quote', 'link', 'anchor', 'orderedlist', 'unorderedlist', 'header1', 'header2', 'note', 'index', 'person'],
     buttonLabels : 'fontawesome',
-    forcePlainText: true,
+    forcePlainText: false,
     placeholder : 'Start writing the content of this section...',
     extensions: {
       'note': new Notes(),
@@ -441,43 +456,52 @@ function setupMediumEditor() {
   });
 }
 
+function copyTextfield() {
+  $('.html-editor').each(function(index, element) {
+    $('.inline-footnote-content').show();
+    var id = $(element).attr('id').substr(7);
+    var text = $(element).html().trim();
+    $('#textarea-'+id).html(text);
+  });
+}
+
 function setupEditors() {
   var currentEditor = $.jStorage.get("current-editor");
 
   if (currentEditor === 'plain-text') {
     $('.wysiwyg, .plain-text, .plain-text-editor, .html-editor').toggleClass('hidden');
     $('.rich-text-processor').toggleClass('disabled');
+    $('.btn-primary').off();
   }
   
-  if ($('.html-editor').length !== 0) {
+  if (currentEditor === 'wysiwyg') {
     setupMediumEditor();
-        
-    $('.btn-primary').on('click', function(event) {
-      $('.html-editor').each(function(index, element) {
-        $('.inline-footnote-content').show();
-        var id = $(element).attr('id').substr(7);
-        var text = $(element).html().trim();
-        $('#textarea-'+id).val(text);
-      });
-    });
+    
+    $('body').on('click', '.btn-primary', copyTextfield);
+
   }
-  $('.markdown-editor').markItUp(mySettings);
+  
+  //$('body').on('click', '.btn-primary', function(event) { event.preventDefault(); });
+  
+  //$('.markdown-editor').markItUp(mySettings);
   
   $('.wysiwyg, .plain-text').on('click', function(event) {
     $('.wysiwyg, .plain-text, .plain-text-editor, .html-editor').toggleClass('hidden');
     $('.rich-text-processor').toggleClass('disabled');
     
     if ($(this).hasClass('wysiwyg')) {
-      editor.activate();
+      if (editor === undefined) {
+        setupMediumEditor();
+      } else {
+        editor.activate();
+      }
       $.jStorage.set("current-editor", 'wysiwyg');
+      $('body').on('click', '.btn-primary', copyTextfield);
     } else {
-      $('.html-editor').each(function(index, element) {
-        var id = $(element).attr('id').substr(7);
-        var text = $(element).html().trim();
-        $('#textarea-'+id).val(text);
-      });
+      copyTextfield();
       editor.deactivate();
       $.jStorage.set("current-editor", 'plain-text');
+      $('body').off('click', '.btn-primary', copyTextfield);
     }
     event.preventDefault();
   });

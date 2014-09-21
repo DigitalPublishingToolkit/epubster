@@ -204,17 +204,17 @@ class EditionsController extends AppController {
 		}
 		$index = '';
 	  if ($edition['Edition']['index']) {
-  		$index = $this->Edition->generateIndex($edition['Section'], 'highlight');
+  		$index = $this->Edition->generateIndex($edition['Section'], 'highlight', 'References.xhtml');
   		$edition['Section'] = $index['sections'];
   		$index = $index['references'];
   		if (!empty($index)) {
     		$edition['Section'][] = array(
-    		  'title' => "Index",
+    		  'title' => "References",
           'text' => "<h3>Index</h3>\n<ul>\n".implode("\n", $index).'</ul>'
     		);    		
   		}
 
-  		$index = $this->Edition->generateIndex($edition['Section'], 'person');
+  		$index = $this->Edition->generateIndex($edition['Section'], 'person', 'Personalia.xhtml');
   		$edition['Section'] = $index['sections'];
   		$index = $index['references'];
   		if (!empty($index)) {

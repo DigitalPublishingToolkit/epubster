@@ -60,7 +60,7 @@
       </div>
 		
       <div class="tab-pane" id="tab-content">
-        <p class="explanation"><?php echo __('Create sections below using <a href="https://daringfireball.net/projects/markdown/">Markdown</a> or use the <a href="http://en.wikipedia.org/wiki/WYSIWYG">WYSIWYG</a> editor. Images may also be included here using the upload function and relevant Markdown syntax for including media.'); ?></p>
+        <p class="explanation"><?php echo __('Create sections below using, images may also be included here using the upload function.'); ?></p>
         
         <?php
       		echo $this->Form->input('index', array('div' => array('class' => 'form-group checkbox'), 'label' => __('Generate an alphabetical index with backreferences based on highlighted words in the edition.'), 'value' => 1, 'type' => 'checkbox'));

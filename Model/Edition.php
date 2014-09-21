@@ -26,6 +26,9 @@ class Edition extends AppModel {
   public $totalReferencesCount;
   public $currentReferenceGroupCount;
   public $indexType;
+  public $position;
+  public $pageUrl;
+  public $referenceId;
 
 /**
  * Validation rules
@@ -131,61 +134,34 @@ class Edition extends AppModel {
   public function sanitiseText($text=null) {
     if ($text) {
   		//Remove Microsoft Word quotes (http://stackoverflow.com/a/6610752/196750)
-  		$text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
-  		$text = preg_replace('/[^(\x20-\x7F)]*/','', $text);
+  		//$text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+  		//$text = preg_replace('/[^(\x20-\x7F)]*/','', $text);
   		return $text;      
     }
   }
   
-  public function parseIndeces($match) {
-    $this->referenceCount += 1;
-    $match = strip_tags($match[1]);
-/*
-    if ($key = array_search($match, $this->processedReferences)) {
+  public function parseIndeces($matches) {
+    $url = sprintf('%s#%s-', $this->url, $this->indexType);
+    $match = strip_tags($matches[0]);
+    $key = array_search($match, $this->processedReferences);
+    if ($key !== false) {
       $count = count($this->references[$key]['url'])+1;
-      $this->references[$key]['url'][] = '<a href="'.$this->url.'">'.$count.'</a>';
+      $this->references[$key]['url'][] = '<a id="backref-'.$this->indexType.'-'.$this->referenceId.'" href="'.$url.$this->referenceId.'">'.$count.'</a>';
+      $this->references[$key]['position'][] = $this->position;
+      $this->references[$key]['id'][] = $this->referenceId;
     } else {
       $count = 1;
-      $this->references[] = array('reference' => $match, 'url' => array('<a href="'.$this->url.'">'.$count.'</a>'));
+      $this->references[] = array('reference' => $match, 'position' => array($this->position), 'id' => array($this->referenceId), 'url' => array('<a id="backref-'.$this->indexType.'-'.$this->referenceId.'" href="'.$url.$this->referenceId.'">'.$count.'</a>'));
       $this->processedReferences[] = $match;
     }
-*/
-    if ($this->referenceCount === 1) {
-      $this->firstUrl = $this->url;
-    }
-    $url = $this->url;
-    $nextReference = $this->referenceCount+1;
     
-    //This is the last reference, jump to the first one
-    if ($this->totalReferencesCount+1 === $nextReference) {
-      $nextReference = 1;
-      $url = $this->firstUrl;
-    }
-    
-    //This is the last reference in the current group, jump to the next page, if applicable  
-    if ($this->referenceCount === $this->currentReferenceGroupCount) {
-      if ($this->currentReferenceGroupCount === 1) {
-        $this->referenceCount = 1;
-        $nextReference = 1;
-      }
-      $url = $this->nextUrl;
-    }
-    
-    //There is only one reference
-    if ($this->totalReferencesCount === 1) {
-      if ($this->indexType === 'is-person') {
-        $url = 'Personalia.xhtml'; 
-      } else {
-        $url = 'Index.xhtml'; 
-      }
-    }
-    
-    $refname = Inflector::slug($match, '-');
-    $refname = 'index-'.$refname;
-    return '<a id="'.$refname.'-'.$this->referenceCount.'" class="'.$this->indexType.'" href="'.$url.'#'.$refname.'-'.$nextReference.'">'.$match.'</a>';
+    $url = $this->pageUrl.'#backref-'.$this->indexType.'-'.$this->referenceId;
+    $match = sprintf('<a href="%s" id="%s-%s" class="%s">'.$matches[1].'</a>', $url, $this->indexType, $this->referenceId, $this->indexType, $matches[1]);
+    $this->referenceId++;
+    return $match;
   }
   
-  public function generateIndex($sections=null, $type='highlight') {  
+  public function generateIndex($sections=null, $type='highlight', $pageUrl=null) {  
     if ($sections) {
       if ($type === 'person') {
         $this->indexType = 'is-person';
@@ -195,28 +171,21 @@ class Edition extends AppModel {
     
       $this->references = array();
       $this->processedReferences = array();
+      $this->pageUrl = $pageUrl;
       foreach ($sections as $position=>$section) {
         $this->url = Inflector::slug($section['title'], '-').'.xhtml';
-        preg_match_all('(\<span class=\"'.$this->indexType.'\">(.*?)\<\/span\>)', $section['text'], $matches);
-        if (isset($matches[1]) && !empty($matches[1])) {
-          foreach ($matches[1] as $index=>$match) {
-            $match = strip_tags($match);
-            $key = array_search($match, $this->processedReferences);
-
-            if ($key !== false) {
-              $count = count($this->references[$key]['url'])+1;
-              $this->references[$key]['url'][] = '<a href="'.$this->url.'">'.$count.'</a>';
-              $this->references[$key]['position'][] = $position;
-            } else {
-              $count = 1;
-              $this->references[] = array('reference' => $match, 'position' => array($position), 'url' => array('<a href="'.$this->url.'">'.$count.'</a>'));
-              $this->processedReferences[] = $match;
-            }
-          }
-        }
+        $this->position = $position;
+        
+        $this->referenceId = 0;
+        $sections[$position]['text'] = preg_replace_callback(
+        '(\<span class=\"'.$this->indexType.'\">(.*?)\<\/span\>)', array($this, 'parseIndeces'),
+        $section['text']);
       }
       $formattedReferences = array();
       foreach ($this->references as $reference) {
+        $formattedReferences[] = '<li>'.$reference['reference'].' <small>('.implode(', ', $reference['url']).')</small></li>';
+
+/*
         if ($reference['position'] > 1) {
           $this->referenceCount = 0;
           $this->totalReferencesCount = 0;
@@ -240,6 +209,7 @@ class Edition extends AppModel {
           }          
         }
         $formattedReferences[] = '<li>'.$reference['reference'].' <small>('.implode(', ', $reference['url']).')</small></li>';
+*/
       }
       return array(
         'references' => $formattedReferences,

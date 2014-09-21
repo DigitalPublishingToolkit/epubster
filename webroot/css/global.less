@@ -431,23 +431,28 @@ input, textarea {
       position: relative;
       text-decoration: none;
 
-      i.selected-file, i.delete-file {
+      span.selected-file, span.delete-file, span.file-caption {
         position: absolute;
       }
 
-      i.selected-file {
+      span.selected-file {
         left: 5px;
         display: none;
       }
       
-      i.delete-file {
+      span.file-caption {
+        bottom: 5px;
+        left: 5px;
+      }
+      
+      span.delete-file {
         right: 5px;
       }
       
       &.selected {
         border-color: #428bca;
         
-        i.fa-check-circle {
+        span.fa-check-circle {
           display: block;
         }        
       }
@@ -608,7 +613,7 @@ input, textarea {
   padding-right: 35px;
 }
 
-.medium-editor-toolbar-form-note input {
+.medium-editor-toolbar-form-note-input {
   font-size: 14px;
   height: 50px;
   width: 350px;
@@ -617,6 +622,36 @@ input, textarea {
   color: #fff;
   border: 0;
   outline: none;
+  overflow: hidden;
+}
+
+.medium-editor-toolbar-form-note a.toolbar-close {
+  top: -5px;
+}
+
+.medium-editor-toolbar-form-note a.toolbar-done {
+  color: #fff;
+  display: inline-block;
+  margin: 0 8px;
+  text-decoration: none;
+  font-weight: bolder;
+  font-size: 18px;
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  right: 0;
+}
+
+.medium-editor-anchor-preview i, .medium-editor-anchor-preview b {
+  text-decoration: none;
+  display: inline;
+  margin: auto;
+  font-style: italic;
+}
+
+.medium-editor-anchor-preview b {
+  font-style: normal;
+  font-weight: bold;
 }
 
 .medium-editor-toolbar-form-note input::-webkit-input-placeholder {

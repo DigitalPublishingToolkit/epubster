@@ -377,21 +377,26 @@ textarea {
   position: relative;
   text-decoration: none;
 }
-#main #file-library a.thumbnail i.selected-file,
-#main #file-library a.thumbnail i.delete-file {
+#main #file-library a.thumbnail span.selected-file,
+#main #file-library a.thumbnail span.delete-file,
+#main #file-library a.thumbnail span.file-caption {
   position: absolute;
 }
-#main #file-library a.thumbnail i.selected-file {
+#main #file-library a.thumbnail span.selected-file {
   left: 5px;
   display: none;
 }
-#main #file-library a.thumbnail i.delete-file {
+#main #file-library a.thumbnail span.file-caption {
+  bottom: 5px;
+  left: 5px;
+}
+#main #file-library a.thumbnail span.delete-file {
   right: 5px;
 }
 #main #file-library a.thumbnail.selected {
   border-color: #428bca;
 }
-#main #file-library a.thumbnail.selected i.fa-check-circle {
+#main #file-library a.thumbnail.selected span.fa-check-circle {
   display: block;
 }
 #main #file-uploader li.file {
@@ -542,7 +547,7 @@ textarea {
   position: relative;
   padding-right: 35px;
 }
-.medium-editor-toolbar-form-note input {
+.medium-editor-toolbar-form-note-input {
   font-size: 14px;
   height: 50px;
   width: 350px;
@@ -551,6 +556,33 @@ textarea {
   color: #fff;
   border: 0;
   outline: none;
+  overflow: hidden;
+}
+.medium-editor-toolbar-form-note a.toolbar-close {
+  top: -5px;
+}
+.medium-editor-toolbar-form-note a.toolbar-done {
+  color: #fff;
+  display: inline-block;
+  margin: 0 8px;
+  text-decoration: none;
+  font-weight: bolder;
+  font-size: 18px;
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  right: 0;
+}
+.medium-editor-anchor-preview i,
+.medium-editor-anchor-preview b {
+  text-decoration: none;
+  display: inline;
+  margin: auto;
+  font-style: italic;
+}
+.medium-editor-anchor-preview b {
+  font-style: normal;
+  font-weight: bold;
 }
 .medium-editor-toolbar-form-note input::-webkit-input-placeholder {
   color: #fff;
