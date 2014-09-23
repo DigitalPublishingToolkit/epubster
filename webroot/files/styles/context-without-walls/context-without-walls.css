@@ -115,6 +115,12 @@ blockquote {
   color: #89D7A5;
 }
 
+figure, figcaption {
+  font-size: 0.8em;
+  line-height: 1em;
+  text-align: center;
+}
+
 /* Libre Baskerville */
 @font-face {
   font-family: 'Libre Baskerville';

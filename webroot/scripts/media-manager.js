@@ -54,7 +54,7 @@ function addMarkdownSyntax(file) {
 
 function addHTMLSyntax(file) {
   if (file !== undefined) {
-    return '<figure><img src="'+UPLOAD_URL+file.name+'" alt="'+file.caption+'"></figure>';
+    return '<figure><img src="'+UPLOAD_URL+file.name+'" alt="'+file.caption+'"><figcaption>'+file.caption+'</figcaption></figure>';
   }
 }
 
@@ -262,6 +262,11 @@ function mediaManager() {
             delete fileList[itemId];
           }
         });
+      } else if ( $(event.target).closest('.file-caption').length > 0 ) {
+        var thumbnailId = $(event.target).parents('.thumbnail').attr('id').substr(5);
+        var caption = $('#file-caption-'+thumbnailId);
+        caption.toggleClass('hidden');
+        $('#modal-overlay').toggleClass('hidden');
       } else {
         $(this).toggleClass('selected');
         if ($(this).hasClass('selected')) {
@@ -278,6 +283,20 @@ function mediaManager() {
           }        
         }        
       }        
+      event.preventDefault();
+    });
+    
+    $(document).on('click', '.file-caption-form button.close, #modal-overlay', function(event) {
+      if (!$(this).hasClass('clicked')) {
+        $(this).addClass('clicked');
+        var fileId = $('.file-caption-form:visible input.file-id').val();
+        var fileCaption = $('.file-caption-form:visible textarea').val();
+        var data = {fileId:fileId,editionId:$('input#EditionId').val(),caption:fileCaption};
+        $('.file-caption-form:visible').toggleClass('hidden');
+        $.post( SITE_URL+"/items/file_caption", data).done(function( data ) {
+          $('#modal-overlay').toggleClass('hidden');
+        });        
+      }
       event.preventDefault();
     });
     

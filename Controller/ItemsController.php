@@ -60,7 +60,7 @@ class ItemsController extends AppController {
       
       $data = array(
         'Item' => array(
-          'caption' => $file['name'],
+          'caption' => '',
           'type' => $file['type'],
           'size' => $file['size'],
           'edition_id' => $this->params['data']['editionId'],
@@ -94,6 +94,34 @@ class ItemsController extends AppController {
       exit();
     }
 	}
+
+/**
+ * file_caption method
+ *
+ * @return void
+ */
+	public function file_caption($id=null) {
+	  $this->autoLayout = false;
+    $this->autoRender = false;	
+    if (isset($this->data['fileId']) && !empty($this->data['fileId'])) {
+      $id = $this->data['fileId'];
+    }
+		if (!$id) {
+			$this->Session->setFlash(__('Invalid id for file'), 'default', array('class' => 'alert alert-warning'));
+			$this->redirect(array('action'=>'index'));
+		}
+		$data = array(
+      'Item' => array(
+  	    'id' => $id,
+  	    'caption' => $this->data['caption']
+	    )
+		);
+		if ($this->Item->save($data)) {
+      $this->Session->setFlash(__('File updated'), 'default', array('class' => 'alert alert-success'));
+		}
+		$this->Session->setFlash(__('File was not updated'), 'default', array('class' => 'alert alert-error'));
+    exit();
+	}
 	
 /**
  * file_delete method
@@ -112,7 +140,7 @@ class ItemsController extends AppController {
 		}
 		if ($this->Item->removeFile($id)) {
   		if ($this->Item->delete($id)) {
-        $this->Session->setFlash(__d('File deleted'), 'default', array('class' => 'alert alert-success'));
+        $this->Session->setFlash(__('File deleted'), 'default', array('class' => 'alert alert-success'));
   		}
 		}
 		$this->Session->setFlash(__('File was not deleted'), 'default', array('class' => 'alert alert-error'));
