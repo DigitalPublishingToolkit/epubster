@@ -447,6 +447,7 @@ function setupMediumEditor() {
     buttons: ['bold', 'italic', 'quote', 'link', 'anchor', 'orderedlist', 'unorderedlist', 'header1', 'header2', 'note', 'index', 'person'],
     buttonLabels : 'fontawesome',
     forcePlainText: false,
+    cleanPastedHTML: true,
     placeholder : 'Start writing the content of this section...',
     extensions: {
       'note': new Notes(),
