@@ -1,13 +1,72 @@
+/* Taken from http://stackoverflow.com/a/4238971/196750 */
+function placeCaretAtEnd(el) {
+    el.focus();
+    if (typeof window.getSelection != "undefined"
+            && typeof document.createRange != "undefined") {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (typeof document.body.createTextRange != "undefined") {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(false);
+        textRange.select();
+    }
+}
+
+/* Taken from http://stackoverflow.com/a/1336922/196750 */
+function editorHasFocus(isStart) {
+    var range, sel, container;
+    if (document.selection) {
+        range = document.selection.createRange();
+        range.collapse(isStart);
+        return range.parentElement();
+    } else {
+        sel = window.getSelection();
+        if (sel.getRangeAt) {
+            if (sel.rangeCount > 0) {
+                range = sel.getRangeAt(0);
+            }
+        } else {
+            // Old WebKit
+            range = document.createRange();
+            range.setStart(sel.anchorNode, sel.anchorOffset);
+            range.setEnd(sel.focusNode, sel.focusOffset);
+
+            // Handle the case when the selection was selected backwards (from the end to the start in the document)
+            if (range.collapsed !== sel.isCollapsed) {
+                range.setStart(sel.focusNode, sel.focusOffset);
+                range.setEnd(sel.anchorNode, sel.anchorOffset);
+            }
+       }
+
+        if (range) {
+           container = range[isStart ? "startContainer" : "endContainer"];
+           if ($(container).parents('.html-editor').length !== 0) {
+             return true;
+           }
+        }   
+    }
+    return false;
+}
+
 /* Taken from http://stackoverflow.com/a/6691294/196750 */
 function insertHTMLAtCursor(html, selectPastedContent) {
   var sel, range;
+
+  if (!editorHasFocus()) {
+    placeCaretAtEnd($('.html-editor').get(0));
+  }
+
   if (window.getSelection) {
     // IE9 and non-IE
     sel = window.getSelection();
     if (sel.getRangeAt && sel.rangeCount) {
       range = sel.getRangeAt(0);
       range.deleteContents();
-
       // Range.createContextualFragment() would be useful here but is
       // only relatively recently standardized and is not supported in
       // some browsers (IE9, for one)
@@ -101,12 +160,24 @@ function getFileLibrary() {
 
 
 function mediaManager() { 
+  $('.insert-media-btn').addClass('disabled');
+  $(document).on('focus', '.html-editor', function() {
+    $('.insert-media-btn').removeClass('disabled');  
+  });
+  
+/*
+  $(document).on('blur', '.html-editor', function() {
+    $('.insert-media-btn').addClass('disabled');  
+  });
+*/
+
   if ($('#media-manager').length !== 0) {
     var fileNotice;
     var fileList = new Array();
 
   	$("#upload-files").hide();
   	$("#insert-media").addClass('disabled');
+  	
     var uploader = new plupload.Uploader({
     	runtimes : 'html5,gears,flash,silverlight,browserplus',
     	browse_button : 'select-files',

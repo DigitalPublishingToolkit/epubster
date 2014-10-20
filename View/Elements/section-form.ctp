@@ -22,7 +22,7 @@
          </div>
          
          <div class="modal-toggles btn-group pull-right">
-           <a data-toggle="modal" href="#media-manager" id="media-manager-toggle-<?php echo $count; ?>" class="btn btn-default btn-xs"><i class="fa fa-arrow-circle-o-up"></i> <?php echo __('Insert media'); ?></a>
+           <a data-toggle="modal" href="#media-manager" id="media-manager-toggle-<?php echo $count; ?>" class="insert-media-btn btn btn-default btn-xs"><i class="fa fa-arrow-circle-o-up"></i> <?php echo __('Insert media'); ?></a>
            <?php /*<a data-toggle="modal" href="#rich-text-processor" id="rich-text-processor-toggle-<?php echo $count; ?>" class="btn btn-default btn-xs rich-text-processor disabled"><i class="fa fa-magic"></i> <?php echo __('Insert Rich Text'); ?></a>*/ ?>
          </div>
 

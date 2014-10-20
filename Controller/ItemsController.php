@@ -69,7 +69,7 @@ class ItemsController extends AppController {
           'timestamp' => date('Y-m-d H:i:s')
         )
       );
-      $fileName = $this->Item->saveFile($data);
+      $fileName = $this->Item->saveFile($data, null);
       if ($fileName !== false) {
     		$this->Item->create();
     		$data['Item']['filename'] = $fileName;

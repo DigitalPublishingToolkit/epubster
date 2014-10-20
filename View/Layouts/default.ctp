@@ -31,8 +31,8 @@
       '/assets/font-awesome/css/font-awesome.min',
       '/assets/markitup/skins/simple/style',
       '/assets/markitup/sets/markdown/style',
-      '/assets/medium-editor/css/medium-editor.min.css',
-      '/assets/medium-editor/css/themes/bootstrap.min.css',
+      '/assets/medium-editor/css/medium-editor.min',
+      '/assets/medium-editor/css/themes/bootstrap.min',
       '/css/global'
     ));
     echo $this->Html->script(array(

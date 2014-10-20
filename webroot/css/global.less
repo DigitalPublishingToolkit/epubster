@@ -179,9 +179,11 @@ input, textarea {
     }
     
     figcaption {
+      font-family: "Droid Sans Mono";
       font-size: 12px;
       line-height: 16px;
-      font-style: italic;
+      font-weight: normal;
+      font-style: normal;
     }
     
     img {
@@ -426,7 +428,9 @@ input, textarea {
   #file-library {
     display: none;
     width: 100%;
-    min-height: 200px;
+    height: 600px;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
         
     .thumbnail-container {

@@ -10,16 +10,6 @@ class Item extends AppModel {
   var $actsAs = array('Containable');
   
 	var $validate = array(
-		'caption' => array(
-			'notempty' => array(
-				'rule' => array('notempty'),
-				'message' => 'Please enter a caption',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
 		'filename' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),

@@ -444,7 +444,7 @@ function restoreSelection(savedSel) {
 
 function setupMediumEditor() {
   editor = new MediumEditor('.html-editor', {
-    buttons: ['bold', 'italic', 'quote', 'link', 'anchor', 'orderedlist', 'unorderedlist', 'header1', 'header2', 'note', 'index', 'person'],
+    buttons: ['bold', 'italic', 'underline', 'quote', 'link', 'anchor', 'orderedlist', 'unorderedlist', 'header1', 'header2', 'note', 'index', 'person'],
     buttonLabels : 'fontawesome',
     forcePlainText: false,
     cleanPastedHTML: true,
@@ -474,8 +474,7 @@ function setupEditors() {
     $('.rich-text-processor').toggleClass('disabled');
     $('.btn-primary').off();
   }
-  
-  if (currentEditor === 'wysiwyg') {
+  if (currentEditor === 'wysiwyg' || currentEditor === null) {
     setupMediumEditor();
     
     $('body').on('click', '.btn-primary', copyTextfield);
