@@ -136,6 +136,7 @@ class Edition extends AppModel {
   		//Remove Microsoft Word quotes (http://stackoverflow.com/a/6610752/196750)
   		//$text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
   		//$text = preg_replace('/[^(\x20-\x7F)]*/','', $text);
+  		$text = preg_replace("/<\/?div[^>]*\>/i", "", $text);
   		return $text;      
     }
   }

@@ -1230,7 +1230,6 @@ if (typeof module === 'object') {
                 if (workEl.tagName.toLowerCase() === 'meta') {
                     workEl.parentNode.removeChild(workEl);
                 }
-
             }
             document.execCommand('insertHTML', false, fragmentBody.innerHTML.replace(/&nbsp;/g, ' '));
         },
