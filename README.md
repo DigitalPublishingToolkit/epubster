@@ -19,3 +19,12 @@ On the client-side:
 - [Epub.js](https://github.com/futurepress/epub.js), an excellent alternative to the fledgling [Readium.js](http://readium.org/projects/readiumjs)
 - [markItUp!](http://markitup.jaysalvat.com/)
 - [MarkItDown](https://github.com/bambax/markitdown.medusis.com), to convert Rich Text to Markdown
+
+##Screenshots
+[![epubster](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-02-thumb.png)](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-02.png)
+[![epubster](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-03-thumb.png)](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-03.png)
+[![epubster](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-04-thumb.png)](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-04.png)
+[![epubster](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-05-thumb.png)](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-05.png)
+[![epubster](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-06-thumb.png)](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-06.png)
+[![epubster](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-07-thumb.png)](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-07.png)
+[![epubster](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-08-thumb.png)](https://raw.githubusercontent.com/DigitalPublishingToolkit/epubster/master/screens/epubster-08.png)
